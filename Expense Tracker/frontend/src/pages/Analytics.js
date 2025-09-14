@@ -67,32 +67,56 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 
 // Statistics Card Component
-const StatCard = ({ title, value, icon, color, subtitle, trend = null }) => (
-  <Card sx={{ borderRadius: 3, height: '100%', background: `linear-gradient(135deg, ${color}.main, ${color}.light)` }}>
-    <CardContent sx={{ color: 'white' }}>
-      <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-        {icon}
-        <Typography variant="body2" sx={{ ml: 1, opacity: 0.9 }}>
-          {title}
-        </Typography>
-      </Box>
-      <Typography variant="h4" sx={{ fontWeight: 700, mb: 1 }}>
-        {formatCurrency(value)}
-      </Typography>
-      <Typography variant="body2" sx={{ opacity: 0.8 }}>
-        {subtitle}
-      </Typography>
-      {trend && (
-        <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
-          {trend > 0 ? <TrendingUp sx={{ fontSize: 16, mr: 0.5 }} /> : <TrendingDown sx={{ fontSize: 16, mr: 0.5 }} />}
-          <Typography variant="caption">
-            {Math.abs(trend).toFixed(1)}% from previous period
+const StatCard = ({ title, value, icon, color, subtitle, trend = null }) => {
+  const getGradientColors = (color) => {
+    switch (color) {
+      case 'success':
+        return 'linear-gradient(135deg, #10b981, #34d399)';
+      case 'error':
+        return 'linear-gradient(135deg, #ef4444, #f87171)';
+      case 'primary':
+        return 'linear-gradient(135deg, #2563eb, #3b82f6)';
+      case 'warning':
+        return 'linear-gradient(135deg, #f59e0b, #fbbf24)';
+      case 'info':
+        return 'linear-gradient(135deg, #06b6d4, #67e8f9)';
+      default:
+        return 'linear-gradient(135deg, #6b7280, #9ca3af)';
+    }
+  };
+
+  return (
+    <Card sx={{ 
+      borderRadius: 3, 
+      height: '100%', 
+      background: getGradientColors(color),
+      transition: 'all 0.3s ease-in-out'
+    }}>
+      <CardContent sx={{ color: 'white' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+          {icon}
+          <Typography variant="body2" sx={{ ml: 1, opacity: 0.9, fontWeight: 500 }}>
+            {title}
           </Typography>
         </Box>
-      )}
-    </CardContent>
-  </Card>
-);
+        <Typography variant="h4" sx={{ fontWeight: 700, mb: 1, color: 'white' }}>
+          {formatCurrency(value)}
+        </Typography>
+        <Typography variant="body2" sx={{ opacity: 0.8, color: 'white' }}>
+          {subtitle}
+        </Typography>
+        {trend && (
+          <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
+            {trend > 0 ? <TrendingUp sx={{ fontSize: 16, mr: 0.5 }} /> : <TrendingDown sx={{ fontSize: 16, mr: 0.5 }} />}
+            <Typography variant="caption" sx={{ color: 'white' }}>
+              {Math.abs(trend).toFixed(1)}% from previous period
+            </Typography>
+          </Box>
+        )}
+      </CardContent>
+    </Card>
+  );
+};
 
 const AnalyticsPage = () => {
   const dispatch = useDispatch();
@@ -289,7 +313,6 @@ const AnalyticsPage = () => {
                     fullWidth 
                     sx={{ 
                       '& .MuiOutlinedInput-root': { 
-                        backgroundColor: 'white',
                         borderRadius: 2 
                       } 
                     }}
@@ -310,7 +333,6 @@ const AnalyticsPage = () => {
                     fullWidth 
                     sx={{ 
                       '& .MuiOutlinedInput-root': { 
-                        backgroundColor: 'white',
                         borderRadius: 2 
                       } 
                     }}
@@ -329,10 +351,7 @@ const AnalyticsPage = () => {
                   disabled={isLoading}
                   sx={{ 
                     px: 4, 
-                    py: 1.5, 
-                    backgroundColor: 'white', 
-                    color: 'primary.main',
-                    '&:hover': { backgroundColor: 'grey.100' }
+                    py: 1.5
                   }}
                   startIcon={<CalendarToday />}
                 >
@@ -416,13 +435,13 @@ const AnalyticsPage = () => {
 
             {/* Additional Statistics */}
             <Paper sx={{ p: 3, mb: 4, borderRadius: 3 }}>
-              <Typography variant="h6" sx={{ mb: 3, fontWeight: 600 }}>
+              <Typography variant="h6" sx={{ mb: 3, fontWeight: 600}}>
                 Detailed Analytics
               </Typography>
               
               <Grid container spacing={3}>
                 <Grid item xs={12} md={6}>
-                  <Box sx={{ p: 2, bgcolor: 'grey.50', borderRadius: 2 }}>
+                  <Box sx={{ p: 2, bgcolor: 'info', borderRadius: 2 }}>
                     <Typography variant="body2" color="text.secondary" gutterBottom>
                       Average Expenditure per Transaction
                     </Typography>
@@ -433,7 +452,7 @@ const AnalyticsPage = () => {
                 </Grid>
 
                 <Grid item xs={12} md={6}>
-                  <Box sx={{ p: 2, bgcolor: 'grey.50', borderRadius: 2 }}>
+                  <Box sx={{ p: 2, bgcolor: 'info', borderRadius: 2 }}>
                     <Typography variant="body2" color="text.secondary" gutterBottom>
                       Savings Rate
                     </Typography>
@@ -449,9 +468,9 @@ const AnalyticsPage = () => {
             </Paper>
 
             {/* Charts Section */}
-            <Grid container spacing={3}>
+            <Grid container spacing={1}>
               {/* Daily Trend Line Chart */}
-              <Grid item xs={12}>
+              <Grid item xs={12} sx={{marginLeft:"2rem", width: "23rem"}}>
                 <Paper sx={{ p: 3, borderRadius: 3 }}>
                   <Typography variant="h6" sx={{ mb: 3, fontWeight: 600 }}>
                     Daily Income & Expense Trend
@@ -519,8 +538,8 @@ const AnalyticsPage = () => {
               </Grid>
 
               {/* Category Breakdown and Summary */}
-              <Grid item xs={12} md={6}>
-                <Paper sx={{ p: 3, borderRadius: 3, height: 450 }}>
+              <Grid item xs={12} md={6} sx={{width: "23rem"}}>
+                <Paper sx={{ p: 3, borderRadius: 3, height: 506 }}>
                   <Typography variant="h6" sx={{ mb: 3, fontWeight: 600 }}>
                     Expense Categories
                   </Typography>
@@ -557,7 +576,7 @@ const AnalyticsPage = () => {
 
               {/* Summary Bar Chart */}
               <Grid item xs={12} md={6}>
-                <Paper sx={{ p: 3, borderRadius: 3, height: 450 }}>
+                <Paper sx={{ p: 3, borderRadius: 3, height: 506, width: "25rem" }}>
                   <Typography variant="h6" sx={{ mb: 3, fontWeight: 600 }}>
                     Period Summary
                   </Typography>
