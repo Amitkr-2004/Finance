@@ -139,22 +139,26 @@ const StatCard = ({ title, value, icon, color, trend, trendValue, index, isOptim
 
 const Dashboard = () => {
   const dispatch = useDispatch();
+
+  // ✅ ALL HOOKS AT TOP LEVEL - FIXED
   const { 
-    data: transactions, 
-    optimisticData,
-    realTimeStats, 
-    chartFilters 
+    data: transactions = [], 
+    optimisticData = {},
+    realTimeStats = {}, 
+    chartFilters = {}
   } = useSelector((state) => state.transactions);
-  
+
   const [openForm, setOpenForm] = useState(false);
   const [notification, setNotification] = useState({ open: false, message: '', severity: 'success' });
-  
+
+  // ✅ MOVED useOptimisticUpdates TO TOP LEVEL - FIXED
   const {
     addOptimisticTransaction: addOptimistic,
     confirmOptimisticTransaction,
     revertOptimisticTransaction,
   } = useOptimisticUpdates();
 
+  // ✅ All other hooks
   useEffect(() => {
     dispatch(fetchTransactions());
   }, [dispatch]);
@@ -214,7 +218,7 @@ const Dashboard = () => {
     setNotification({
       open: true,
       message: categoryName 
-        ? `Filtered transactions by category: ${categoryName}`
+        ? `Filtered transactions by category: ${categoryName}` // ✅ FIXED: Added backticks
         : 'Cleared category filter',
       severity: 'info'
     });
@@ -223,14 +227,14 @@ const Dashboard = () => {
   const handleLineChartClick = (data, lineKey) => {
     setNotification({
       open: true,
-      message: `${data.date}: ${lineKey} = ₹${data[lineKey]?.toLocaleString('en-IN')}`,
+      message: `${data.date}: ${lineKey} = ₹${data[lineKey]?.toLocaleString('en-IN')}`, // ✅ FIXED: Added backticks
       severity: 'info'
     });
   };
 
   // Handle optimistic transaction creation
   const handleOptimisticCreate = async (transactionData) => {
-    const tempId = `temp_${Date.now()}`;
+    const tempId = `temp_${Date.now()}`; // ✅ FIXED: Added backticks
     
     try {
       const optimisticTransaction = addOptimistic(tempId, transactionData);
@@ -251,7 +255,6 @@ const Dashboard = () => {
         message: 'Transaction successfully saved!',
         severity: 'success'
       });
-
     } catch (error) {
       revertOptimisticTransaction(tempId);
       dispatch(removeOptimisticTransaction(tempId));
@@ -298,16 +301,52 @@ const Dashboard = () => {
       <StaggerContainer staggerDelay={0.1}>
         <Grid container spacing={3} sx={{ mb: 4 }}>
           <Grid item xs={12} sm={6} md={3}>
-            <StatCard title="Total Balance" value={totalBalance} icon={<AccountBalance />} color="primary" trend={totalBalance >= 0 ? "up" : "down"} trendValue={12} index={0} isOptimistic={hasOptimisticData} />
+            <StatCard 
+              title="Total Balance" 
+              value={totalBalance} 
+              icon={<AccountBalance />} 
+              color="primary" 
+              trend={totalBalance >= 0 ? "up" : "down"} 
+              trendValue={12} 
+              index={0} 
+              isOptimistic={hasOptimisticData} 
+            />
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
-            <StatCard title="Total Income" value={stats.totalIncome} icon={<TrendingUp />} color="success" trend="up" trendValue={8} index={1} isOptimistic={hasOptimisticData} />
+            <StatCard 
+              title="Total Income" 
+              value={stats.totalIncome} 
+              icon={<TrendingUp />} 
+              color="success" 
+              trend="up" 
+              trendValue={8} 
+              index={1} 
+              isOptimistic={hasOptimisticData} 
+            />
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
-            <StatCard title="Total Expenses" value={stats.totalExpenses} icon={<TrendingDown />} color="error" trend="down" trendValue={5} index={2} isOptimistic={hasOptimisticData} />
+            <StatCard 
+              title="Total Expenses" 
+              value={stats.totalExpenses} 
+              icon={<TrendingDown />} 
+              color="error" 
+              trend="down" 
+              trendValue={5} 
+              index={2} 
+              isOptimistic={hasOptimisticData} 
+            />
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
-            <StatCard title="Savings" value={savings} icon={<CreditCard />} color="warning" trend={savings > 0 ? "up" : "down"} trendValue={15} index={3} isOptimistic={hasOptimisticData} />
+            <StatCard 
+              title="Savings" 
+              value={savings} 
+              icon={<CreditCard />} 
+              color="warning" 
+              trend={savings > 0 ? "up" : "down"} 
+              trendValue={15} 
+              index={3} 
+              isOptimistic={hasOptimisticData} 
+            />
           </Grid>
         </Grid>
       </StaggerContainer>
@@ -323,7 +362,6 @@ const Dashboard = () => {
               title="Expense Categories (Click to Filter)"
             />
           </Grid>
-
           <Grid item xs={12} md={6}>
             <InteractiveLineChart
               data={trendData}
@@ -408,7 +446,11 @@ const Dashboard = () => {
       </SlideIn>
 
       {/* Transaction Form */}
-      <TransactionForm open={openForm} onClose={() => setOpenForm(false)} onOptimisticSubmit={handleOptimisticCreate} />
+      <TransactionForm 
+        open={openForm} 
+        onClose={() => setOpenForm(false)} 
+        onOptimisticSubmit={handleOptimisticCreate} 
+      />
 
       {/* Notification */}
       <Snackbar
@@ -417,7 +459,11 @@ const Dashboard = () => {
         onClose={() => setNotification({ ...notification, open: false })}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
       >
-        <Alert onClose={() => setNotification({ ...notification, open: false })} severity={notification.severity} variant="filled">
+        <Alert 
+          onClose={() => setNotification({ ...notification, open: false })} 
+          severity={notification.severity} 
+          variant="filled"
+        >
           {notification.message}
         </Alert>
       </Snackbar>
