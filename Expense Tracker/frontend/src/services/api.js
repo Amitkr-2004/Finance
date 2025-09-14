@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = process.env.APIBASE_URL;
+const API_BASE_URL = "http://localhost:10000/api";
 
 const api = axios.create({
   baseURL: API_BASE_URL,
