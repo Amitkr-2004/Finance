@@ -44,78 +44,98 @@ import {
 } from '../components/Animations/AnimatedComponents';
 import { useOptimisticUpdates } from '../hooks/useOptimisticUpdates';
 
-const StatCard = ({ title, value, icon, color, trend, trendValue, index, isOptimistic = false }) => (
-  <StaggerItem index={index}>
-    <AnimatedCard>
-      <Card 
-        sx={{ 
-          height: '100%', 
-          borderRadius: 3,
-          background: `linear-gradient(135deg, ${color}.main, ${color}.light)`,
-          position: 'relative',
-          overflow: 'hidden',
-          border: isOptimistic ? '2px solid #fff' : 'none',
-          '&::before': {
-            content: '""',
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: isOptimistic 
-              ? 'linear-gradient(45deg, rgba(255,255,255,0.2) 0%, transparent 50%)'
-              : 'linear-gradient(45deg, rgba(255,255,255,0.1) 0%, transparent 50%)',
-            pointerEvents: 'none',
-          }
-        }}
-      >
-        <CardContent sx={{ position: 'relative', zIndex: 1 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-            <motion.div
-              animate={isOptimistic ? { rotate: [0, 10, -10, 0] } : {}}
-              transition={{ duration: 0.5, repeat: isOptimistic ? Infinity : 0, repeatDelay: 2 }}
-            >
-              <Avatar sx={{ bgcolor: 'rgba(255,255,255,0.2)', color: 'white', mr: 2 }}>
-                {icon}
-              </Avatar>
-            </motion.div>
-            <Box sx={{ flexGrow: 1 }}>
-              <Typography variant="body2" sx={{ color: 'white', opacity: 0.9 }}>
-                {title} {isOptimistic && '(Updating...)'}
-              </Typography>
-              <Typography variant="h5" sx={{ fontWeight: 700, color: 'white' }}>
-                ₹<AnimatedNumber value={value} />
-              </Typography>
-            </Box>
-          </Box>
-          {trendValue && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-            >
-              <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <motion.div
-                  animate={{ y: [0, -2, 0] }}
-                  transition={{ repeat: Infinity, duration: 2 }}
-                >
-                  {trend === 'up' ? (
-                    <TrendingUp sx={{ color: 'white', fontSize: 16, mr: 0.5 }} />
-                  ) : (
-                    <TrendingDown sx={{ color: 'white', fontSize: 16, mr: 0.5 }} />
-                  )}
-                </motion.div>
-                <Typography variant="body2" sx={{ color: 'white', opacity: 0.9 }}>
-                  {trendValue}% from last month
+const StatCard = ({ title, value, icon, color, trend, trendValue, index, isOptimistic = false }) => {
+  const getGradientColors = (color) => {
+    switch (color) {
+      case 'success':
+        return 'linear-gradient(135deg, #10b981, #34d399)';
+      case 'error':
+        return 'linear-gradient(135deg, #ef4444, #f87171)';
+      case 'primary':
+        return 'linear-gradient(135deg, #2563eb, #3b82f6)';
+      case 'warning':
+        return 'linear-gradient(135deg, #f59e0b, #fbbf24)';
+      case 'info':
+        return 'linear-gradient(135deg, #06b6d4, #67e8f9)';
+      default:
+        return 'linear-gradient(135deg, #6b7280, #9ca3af)';
+    }
+  };
+
+  return (
+    <StaggerItem index={index}>
+      <AnimatedCard>
+        <Card 
+          sx={{ 
+            height: '100%', 
+            borderRadius: 3,
+            background: getGradientColors(color),
+            position: 'relative',
+            overflow: 'hidden',
+            border: isOptimistic ? '2px solid #fff' : 'none',
+            transition: 'all 0.3s ease-in-out',
+            '&::before': {
+              content: '""',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: isOptimistic 
+                ? 'linear-gradient(45deg, rgba(255,255,255,0.2) 0%, transparent 50%)'
+                : 'linear-gradient(45deg, rgba(255,255,255,0.1) 0%, transparent 50%)',
+              pointerEvents: 'none',
+            }
+          }}
+        >
+          <CardContent sx={{ position: 'relative', zIndex: 1 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+              <motion.div
+                animate={isOptimistic ? { rotate: [0, 10, -10, 0] } : {}}
+                transition={{ duration: 0.5, repeat: isOptimistic ? Infinity : 0, repeatDelay: 2 }}
+              >
+                <Avatar sx={{ bgcolor: 'rgba(255,255,255,0.2)', color: 'white', mr: 2 }}>
+                  {icon}
+                </Avatar>
+              </motion.div>
+              <Box sx={{ flexGrow: 1 }}>
+                <Typography variant="body2" sx={{ color: 'white', opacity: 0.9, fontWeight: 500 }}>
+                  {title} {isOptimistic && '(Updating...)'}
+                </Typography>
+                <Typography variant="h5" sx={{ fontWeight: 700, color: 'white' }}>
+                  ₹<AnimatedNumber value={value} />
                 </Typography>
               </Box>
-            </motion.div>
-          )}
-        </CardContent>
-      </Card>
-    </AnimatedCard>
-  </StaggerItem>
-);
+            </Box>
+            {trendValue && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+              >
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <motion.div
+                    animate={{ y: [0, -2, 0] }}
+                    transition={{ repeat: Infinity, duration: 2 }}
+                  >
+                    {trend === 'up' ? (
+                      <TrendingUp sx={{ color: 'white', fontSize: 16, mr: 0.5 }} />
+                    ) : (
+                      <TrendingDown sx={{ color: 'white', fontSize: 16, mr: 0.5 }} />
+                    )}
+                  </motion.div>
+                  <Typography variant="body2" sx={{ color: 'white', opacity: 0.9 }}>
+                    {trendValue}% from last month
+                  </Typography>
+                </Box>
+              </motion.div>
+            )}
+          </CardContent>
+        </Card>
+      </AnimatedCard>
+    </StaggerItem>
+  );
+};
 
 const Dashboard = () => {
   const dispatch = useDispatch();
@@ -164,7 +184,7 @@ const Dashboard = () => {
   const savings = totalBalance > 0 ? totalBalance : 0;
   const hasOptimisticData = Object.keys(optimisticData).length > 0;
 
-  // Prepare chart data
+  // Prepare chart data (Pie chart updates automatically whenever stats changes)
   const expenseData = Object.entries(stats.expensesByCategory).map(([name, value]) => ({
     name,
     value,
@@ -213,7 +233,6 @@ const Dashboard = () => {
     const tempId = `temp_${Date.now()}`;
     
     try {
-      // Add optimistic transaction immediately
       const optimisticTransaction = addOptimistic(tempId, transactionData);
       dispatch(addOptimisticTransaction({ tempId, transaction: optimisticTransaction }));
       
@@ -223,10 +242,7 @@ const Dashboard = () => {
         severity: 'info'
       });
 
-      // Send to server
       const result = await dispatch(createTransaction(transactionData)).unwrap();
-      
-      // Confirm optimistic update
       confirmOptimisticTransaction(tempId, result);
       dispatch(removeOptimisticTransaction(tempId));
       
@@ -237,7 +253,6 @@ const Dashboard = () => {
       });
 
     } catch (error) {
-      // Revert optimistic update on failure
       revertOptimisticTransaction(tempId);
       dispatch(removeOptimisticTransaction(tempId));
       
@@ -266,10 +281,7 @@ const Dashboard = () => {
               </motion.span>
             )}
           </Typography>
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
             <Button
               variant="contained"
               startIcon={<AddIcon />}
@@ -282,61 +294,25 @@ const Dashboard = () => {
         </Box>
       </FadeIn>
 
-      {/* Stats Cards with Real-time Updates */}
+      {/* Stats */}
       <StaggerContainer staggerDelay={0.1}>
         <Grid container spacing={3} sx={{ mb: 4 }}>
           <Grid item xs={12} sm={6} md={3}>
-            <StatCard
-              title="Total Balance"
-              value={totalBalance}
-              icon={<AccountBalance />}
-              color="primary"
-              trend={totalBalance >= 0 ? "up" : "down"}
-              trendValue={12}
-              index={0}
-              isOptimistic={hasOptimisticData}
-            />
+            <StatCard title="Total Balance" value={totalBalance} icon={<AccountBalance />} color="primary" trend={totalBalance >= 0 ? "up" : "down"} trendValue={12} index={0} isOptimistic={hasOptimisticData} />
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
-            <StatCard
-              title="Total Income"
-              value={stats.totalIncome}
-              icon={<TrendingUp />}
-              color="success"
-              trend="up"
-              trendValue={8}
-              index={1}
-              isOptimistic={hasOptimisticData}
-            />
+            <StatCard title="Total Income" value={stats.totalIncome} icon={<TrendingUp />} color="success" trend="up" trendValue={8} index={1} isOptimistic={hasOptimisticData} />
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
-            <StatCard
-              title="Total Expenses"
-              value={stats.totalExpenses}
-              icon={<TrendingDown />}
-              color="error"
-              trend="down"
-              trendValue={5}
-              index={2}
-              isOptimistic={hasOptimisticData}
-            />
+            <StatCard title="Total Expenses" value={stats.totalExpenses} icon={<TrendingDown />} color="error" trend="down" trendValue={5} index={2} isOptimistic={hasOptimisticData} />
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
-            <StatCard
-              title="Savings"
-              value={savings}
-              icon={<CreditCard />}
-              color="warning"
-              trend={savings > 0 ? "up" : "down"}
-              trendValue={15}
-              index={3}
-              isOptimistic={hasOptimisticData}
-            />
+            <StatCard title="Savings" value={savings} icon={<CreditCard />} color="warning" trend={savings > 0 ? "up" : "down"} trendValue={15} index={3} isOptimistic={hasOptimisticData} />
           </Grid>
         </Grid>
       </StaggerContainer>
 
-      {/* Interactive Charts */}
+      {/* Charts */}
       <SlideIn direction="up" delay={0.4}>
         <Grid container spacing={3} sx={{ mb: 4 }}>
           <Grid item xs={12} md={6}>
@@ -358,7 +334,7 @@ const Dashboard = () => {
         </Grid>
       </SlideIn>
 
-      {/* Recent Transactions with Real-time Updates */}
+      {/* Recent Transactions */}
       <SlideIn direction="up" delay={0.6}>
         <AnimatedCard>
           <Paper sx={{ p: 3, borderRadius: 3 }}>
@@ -373,7 +349,7 @@ const Dashboard = () => {
             <AnimatePresence mode="popLayout">
               {allTransactions.slice(0, 5).map((transaction, index) => (
                 <motion.div
-                  key={transaction._id}
+                  key={transaction._id || transaction.tempId}
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: 20 }}
@@ -431,25 +407,17 @@ const Dashboard = () => {
         </AnimatedCard>
       </SlideIn>
 
-      {/* Transaction Form with Optimistic Updates */}
-      <TransactionForm
-        open={openForm}
-        onClose={() => setOpenForm(false)}
-        onOptimisticSubmit={handleOptimisticCreate}
-      />
+      {/* Transaction Form */}
+      <TransactionForm open={openForm} onClose={() => setOpenForm(false)} onOptimisticSubmit={handleOptimisticCreate} />
 
-      {/* Notification Snackbar */}
+      {/* Notification */}
       <Snackbar
         open={notification.open}
         autoHideDuration={4000}
         onClose={() => setNotification({ ...notification, open: false })}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
       >
-        <Alert 
-          onClose={() => setNotification({ ...notification, open: false })} 
-          severity={notification.severity}
-          variant="filled"
-        >
+        <Alert onClose={() => setNotification({ ...notification, open: false })} severity={notification.severity} variant="filled">
           {notification.message}
         </Alert>
       </Snackbar>
