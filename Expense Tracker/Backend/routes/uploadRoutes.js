@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const authMiddleware = require('../middleware/authMiddleware');
-const { uploadReceipt, uploadBankStatement } = require('../controllers/uploadController');
+const { uploadReceipt, uploadBankStatement } = require('../controller/uploadController');
 
 router.use(authMiddleware);
 

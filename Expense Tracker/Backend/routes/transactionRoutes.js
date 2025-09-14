@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const authMiddleware = require('../middleware/authMiddleware');
-const { createTransaction, listTransactions } = require('../controllers/transactionController');
+const { createTransaction, listTransactions } = require('../controller/transactionController');
 
 router.use(authMiddleware);
 
