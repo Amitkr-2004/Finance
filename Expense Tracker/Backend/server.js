@@ -201,6 +201,11 @@ console.log('   📍 /api/upload/receipt (Receipt upload)');
 console.log('   📍 /api/upload/bank-statement (Bank statement upload)');
 console.log('   📍 /api/expenses/* (Expenses CRUD)');
 
+
+app.get("/", (req, res) => {
+  res.send("🚀 Expense Tracker API is running...");
+});
+
 // Health check endpoint
 app.get('/api/health', (req, res) => {
   const health = {
