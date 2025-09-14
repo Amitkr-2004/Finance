@@ -399,14 +399,7 @@ copies or substantial portions of the Software.
 
 - **Author**: Amit Kumar
 - **GitHub**: [@Amitkr-2004](https://github.com/Amitkr-2004)
-- **Email**: [your-email@example.com](mailto:your-email@example.com)
-
-### Getting Help
-
-1. Check the [Issues](https://github.com/Amitkr-2004/Finance/issues) section
-2. Read the [Documentation](docs/)
-3. Create a new issue with detailed information
-4. Join our community discussions
+- **Email**: [amitkumar@gmail.com](mailto:amitkumar@gmail.com)
 
 ***
 
