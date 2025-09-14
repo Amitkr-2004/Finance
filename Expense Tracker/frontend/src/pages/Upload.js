@@ -15,6 +15,7 @@ import {
   Avatar,
   Fade,
   Collapse,
+  useTheme,
 } from '@mui/material';
 import {
   CloudUpload as UploadIcon,
@@ -29,6 +30,7 @@ import {
   SmartToy as AIIcon,
   Refresh as RefreshIcon,
   BugReport as DebugIcon,
+  Assessment as AnalyticsIcon,
 } from '@mui/icons-material';
 import { motion, AnimatePresence } from 'framer-motion';
 import { uploadAPI, transactionAPI } from '../services/api';
@@ -37,6 +39,7 @@ import { FadeIn, SlideIn, AnimatedCard } from '../components/Animations/Animated
 
 const Upload = () => {
   const dispatch = useDispatch();
+  const theme = useTheme();
   
   // Upload state
   const [uploading, setUploading] = useState(false);
@@ -559,65 +562,118 @@ const Upload = () => {
   ];
 
   return (
-    <Box>
-      <FadeIn>
-        <Typography variant="h4" sx={{ mb: 2, fontWeight: 700 }}>
-          🚀 Intelligent File Upload
-        </Typography>
-        <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
-          Upload receipts and bank statements for automatic expense extraction using advanced OCR and AI technology.
-        </Typography>
-      </FadeIn>
+    <Box sx={{
+      minHeight: '100vh',
+      bgcolor: theme.palette.background.default,
+      transition: 'background-color 0.4s ease',
+      ...(theme.palette.mode === 'light' && {
+        backgroundImage: 'radial-gradient(circle at 20% 80%, rgba(233, 69, 96, 0.07) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(0, 212, 170, 0.07) 0%, transparent 50%)',
+      }),
+      p: 4,
+    }}>
+      {/* Enhanced Header */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
+        <Box sx={{ display: 'flex', alignItems: 'center', mb: 5 }}>
+          <Box sx={{ 
+            p: 2, 
+            borderRadius: 3, 
+            background: 'linear-gradient(135deg, #e94560, #ff6b88)',
+            mr: 3,
+            boxShadow: '0 8px 24px rgba(233, 69, 96, 0.3)'
+          }}>
+            <UploadIcon sx={{ fontSize: 32, color: 'white' }} />
+          </Box>
+          <Box>
+            <Typography variant="h3" sx={{ 
+              fontWeight: 800, 
+              color: theme.palette.text.primary,
+              fontSize: '2.4rem',
+              letterSpacing: '-0.02em',
+              mb: 0.5
+            }}>
+              Intelligent File Upload
+            </Typography>
+            <Typography variant="h6" sx={{ 
+              color: theme.palette.text.secondary,
+              fontWeight: 400,
+              fontSize: '1.1rem'
+            }}>
+              Advanced OCR & AI-powered expense extraction
+            </Typography>
+          </Box>
+        </Box>
+      </motion.div>
 
-      {/* Upload Cards - Side by Side */}
-      <SlideIn direction="up" delay={0.1}>
-        <Grid container spacing={3} sx={{ mb: 4 }}>
+      {/* Enhanced Upload Cards */}
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.1 }}
+      >
+        <Grid container spacing={4} sx={{ mb: 5 }}>
           <Grid item xs={12} md={6}>
-            <AnimatedCard>
+            <motion.div whileHover={{ scale: 1.02, y: -4 }} transition={{ duration: 0.2 }}>
               <Card sx={{ 
-                borderRadius: 3, 
+                borderRadius: 4, 
                 height: '100%',
-                background: uploading ? 'linear-gradient(135deg, #e3f2fd, #bbdefb)' : 'linear-gradient(135deg, #f8f9ff, #ffffff)',
-                transition: 'all 0.3s ease',
+                backgroundColor: theme.palette.mode === 'dark' ? 'rgba(16, 16, 24, 0.85)' : '#fff',
                 border: '1px solid',
-                borderColor: 'divider',
-                boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+                borderColor: theme.palette.mode === 'dark' ? 'rgba(233, 69, 96, 0.15)' : 'rgba(200, 200, 200, 0.3)',
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                backdropFilter: 'blur(20px)',
+                boxShadow: theme.palette.mode === 'dark' 
+                  ? '0 8px 32px rgba(0, 0, 0, 0.3)' 
+                  : '0 8px 32px rgba(0, 0, 0, 0.08)',
                 '&:hover': {
-                  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12)',
-                  transform: 'translateY(-2px)',
+                  boxShadow: theme.palette.mode === 'dark'
+                    ? '0 12px 40px rgba(0, 0, 0, 0.4)'
+                    : '0 12px 40px rgba(0, 0, 0, 0.12)',
                 }
               }}>
                 <CardContent sx={{ p: 4, textAlign: 'center', height: '100%', display: 'flex', flexDirection: 'column' }}>
                   <motion.div
                     animate={uploading ? { rotate: 360 } : { rotate: 0 }}
                     transition={{ duration: 2, repeat: uploading ? Infinity : 0 }}
-                    style={{ marginBottom: 16 }}
+                    style={{ marginBottom: 24 }}
                   >
-                    <ReceiptIcon sx={{ fontSize: 48, color: 'primary.main' }} />
+                    <Box sx={{ 
+                      p: 2, 
+                      borderRadius: 3, 
+                      background: 'linear-gradient(135deg, #e94560, #ff6b88)',
+                      display: 'inline-block',
+                      boxShadow: '0 8px 24px rgba(233, 69, 96, 0.3)'
+                    }}>
+                      <ReceiptIcon sx={{ fontSize: 48, color: 'white' }} />
+                    </Box>
                   </motion.div>
                   
-                  <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
-                    📱 Upload Receipt Images
+                  <Typography variant="h5" sx={{ mb: 3, fontWeight: 700, color: theme.palette.text.primary }}>
+                    Receipt Images
                   </Typography>
                   
                   <Box sx={{ mb: 3, flexGrow: 1 }}>
                     <Paper sx={{ 
-                      p: 2, 
-                      bgcolor: 'primary.main', 
+                      p: 3, 
+                      background: 'linear-gradient(135deg, #00d4aa, #33e4c4)',
                       color: 'white',
-                      borderRadius: 2,
-                      mb: 2
+                      borderRadius: 3,
+                      mb: 3,
+                      boxShadow: '0 6px 20px rgba(0, 212, 170, 0.3)'
                     }}>
-                      <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                        Supported File Formats
+                      <Typography variant="overline" sx={{ fontWeight: 600, letterSpacing: '0.1em' }}>
+                        Supported Formats
                       </Typography>
-                      <Typography variant="h6" sx={{ fontWeight: 700 }}>
-                        JPG • PNG • GIF
+                      <Typography variant="h6" sx={{ fontWeight: 800, mt: 0.5 }}>
+                        JPG • PNG • GIF • WEBP
                       </Typography>
                     </Paper>
                     
-                    <Typography variant="body2" color="text.secondary">
-                      Advanced multi-pass OCR with Google Gemini AI parsing
+                    <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.95rem' }}>
+                      Multi-pass OCR with Google Gemini AI parsing for maximum accuracy
                     </Typography>
                   </Box>
                   
@@ -631,73 +687,100 @@ const Upload = () => {
                       disabled={uploading}
                     />
                     <label htmlFor="receipt-upload">
-                      <Button
-                        variant="contained"
-                        component="span"
-                        startIcon={<UploadIcon />}
-                        size="large"
-                        disabled={uploading}
-                        sx={{ px: 3, py: 1.5, fontWeight: 600 }}
-                      >
-                        {uploading ? 'Processing...' : 'Select Receipt Image'}
-                      </Button>
+                      <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                        <Button
+                          variant="contained"
+                          component="span"
+                          startIcon={<UploadIcon />}
+                          size="large"
+                          disabled={uploading}
+                          sx={{ 
+                            px: 4, 
+                            py: 1.5, 
+                            borderRadius: 3,
+                            background: 'linear-gradient(135deg, #e94560, #ff6b88)',
+                            fontSize: '1rem',
+                            fontWeight: 700,
+                            boxShadow: '0 6px 20px rgba(233, 69, 96, 0.3)',
+                            '&:hover': {
+                              background: 'linear-gradient(135deg, #ff6b88, #e94560)',
+                              boxShadow: '0 8px 25px rgba(233, 69, 96, 0.4)',
+                            }
+                          }}
+                        >
+                          {uploading ? 'Processing...' : 'Select Receipt Image'}
+                        </Button>
+                      </motion.div>
                     </label>
 
-                    <Typography variant="caption" display="block" sx={{ mt: 1, color: 'text.secondary' }}>
+                    <Typography variant="caption" display="block" sx={{ mt: 2, color: 'text.secondary' }}>
                       Maximum file size: 10MB
                     </Typography>
                   </Box>
                 </CardContent>
               </Card>
-            </AnimatedCard>
+            </motion.div>
           </Grid>
 
           <Grid item xs={12} md={6}>
-            <AnimatedCard>
+            <motion.div whileHover={{ scale: 1.02, y: -4 }} transition={{ duration: 0.2 }}>
               <Card sx={{ 
-                borderRadius: 3, 
+                borderRadius: 4, 
                 height: '100%',
-                background: uploading ? 'linear-gradient(135deg, #f3e5f5, #e1bee7)' : 'linear-gradient(135deg, #fff8e1, #ffffff)',
-                transition: 'all 0.3s ease',
+                backgroundColor: theme.palette.mode === 'dark' ? 'rgba(16, 16, 24, 0.85)' : '#fff',
                 border: '1px solid',
-                borderColor: 'divider',
-                boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+                borderColor: theme.palette.mode === 'dark' ? 'rgba(233, 69, 96, 0.15)' : 'rgba(200, 200, 200, 0.3)',
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                backdropFilter: 'blur(20px)',
+                boxShadow: theme.palette.mode === 'dark' 
+                  ? '0 8px 32px rgba(0, 0, 0, 0.3)' 
+                  : '0 8px 32px rgba(0, 0, 0, 0.08)',
                 '&:hover': {
-                  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12)',
-                  transform: 'translateY(-2px)',
+                  boxShadow: theme.palette.mode === 'dark'
+                    ? '0 12px 40px rgba(0, 0, 0, 0.4)'
+                    : '0 12px 40px rgba(0, 0, 0, 0.12)',
                 }
               }}>
                 <CardContent sx={{ p: 4, textAlign: 'center', height: '100%', display: 'flex', flexDirection: 'column' }}>
                   <motion.div
                     animate={uploading ? { scale: [1, 1.1, 1] } : { scale: 1 }}
                     transition={{ duration: 1.5, repeat: uploading ? Infinity : 0 }}
-                    style={{ marginBottom: 16 }}
+                    style={{ marginBottom: 24 }}
                   >
-                    <PdfIcon sx={{ fontSize: 48, color: 'secondary.main' }} />
+                    <Box sx={{ 
+                      p: 2, 
+                      borderRadius: 3, 
+                      background: 'linear-gradient(135deg, #3742fa, #5352ed)',
+                      display: 'inline-block',
+                      boxShadow: '0 8px 24px rgba(55, 66, 250, 0.3)'
+                    }}>
+                      <PdfIcon sx={{ fontSize: 48, color: 'white' }} />
+                    </Box>
                   </motion.div>
                   
-                  <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
-                    🏦 Upload PDF Statements
+                  <Typography variant="h5" sx={{ mb: 3, fontWeight: 700, color: theme.palette.text.primary }}>
+                    PDF Statements
                   </Typography>
                   
                   <Box sx={{ mb: 3, flexGrow: 1 }}>
                     <Paper sx={{ 
-                      p: 2, 
-                      bgcolor: 'secondary.main', 
+                      p: 3, 
+                      background: 'linear-gradient(135deg, #3742fa, #5352ed)',
                       color: 'white',
-                      borderRadius: 2,
-                      mb: 2
+                      borderRadius: 3,
+                      mb: 3,
+                      boxShadow: '0 6px 20px rgba(55, 66, 250, 0.3)'
                     }}>
-                      <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                        Supported File Format
+                      <Typography variant="overline" sx={{ fontWeight: 600, letterSpacing: '0.1em' }}>
+                        Supported Format
                       </Typography>
-                      <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                      <Typography variant="h6" sx={{ fontWeight: 800, mt: 0.5 }}>
                         PDF
                       </Typography>
                     </Paper>
                     
-                    <Typography variant="body2" color="text.secondary">
-                      Google Vision API with intelligent transaction parsing
+                    <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.95rem' }}>
+                      Google Vision API with intelligent transaction pattern recognition
                     </Typography>
                   </Box>
                   
@@ -711,60 +794,87 @@ const Upload = () => {
                       disabled={uploading}
                     />
                     <label htmlFor="statement-upload">
-                      <Button
-                        variant="contained"
-                        component="span"
-                        startIcon={<UploadIcon />}
-                        size="large"
-                        disabled={uploading}
-                        color="secondary"
-                        sx={{ px: 3, py: 1.5, fontWeight: 600 }}
-                      >
-                        {uploading ? 'Processing...' : 'Select PDF Statement'}
-                      </Button>
+                      <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                        <Button
+                          variant="contained"
+                          component="span"
+                          startIcon={<UploadIcon />}
+                          size="large"
+                          disabled={uploading}
+                          sx={{ 
+                            px: 4, 
+                            py: 1.5, 
+                            borderRadius: 3,
+                            background: 'linear-gradient(135deg, #3742fa, #5352ed)',
+                            fontSize: '1rem',
+                            fontWeight: 700,
+                            boxShadow: '0 6px 20px rgba(55, 66, 250, 0.3)',
+                            '&:hover': {
+                              background: 'linear-gradient(135deg, #5352ed, #3742fa)',
+                              boxShadow: '0 8px 25px rgba(55, 66, 250, 0.4)',
+                            }
+                          }}
+                        >
+                          {uploading ? 'Processing...' : 'Select PDF Statement'}
+                        </Button>
+                      </motion.div>
                     </label>
 
-                    <Typography variant="caption" display="block" sx={{ mt: 1, color: 'text.secondary' }}>
+                    <Typography variant="caption" display="block" sx={{ mt: 2, color: 'text.secondary' }}>
                       Maximum file size: 10MB
                     </Typography>
                   </Box>
                 </CardContent>
               </Card>
-            </AnimatedCard>
+            </motion.div>
           </Grid>
         </Grid>
-      </SlideIn>
+      </motion.div>
 
-      {/* Processing Status */}
+      {/* Enhanced Processing Status */}
       <AnimatePresence>
         {uploading && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.4 }}
           >
-            <Paper sx={{ p: 3, mb: 4, borderRadius: 3, background: 'linear-gradient(135deg, #e8f5e8, #c8e6c9)' }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+            <Paper sx={{ 
+              p: 4, 
+              mb: 4, 
+              borderRadius: 4,
+              backgroundColor: theme.palette.mode === 'dark' ? 'rgba(16, 16, 24, 0.85)' : '#fff',
+              border: '1px solid',
+              borderColor: theme.palette.mode === 'dark' ? 'rgba(0, 212, 170, 0.2)' : 'rgba(0, 212, 170, 0.3)',
+              boxShadow: '0 8px 32px rgba(0, 212, 170, 0.2)',
+            }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
                 <motion.div
                   animate={{ rotate: 360 }}
                   transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
                 >
-                  <Avatar sx={{ bgcolor: 'primary.main', mr: 2 }}>
-                    <AIIcon />
+                  <Avatar sx={{ bgcolor: 'success.main', mr: 3, width: 56, height: 56 }}>
+                    <AIIcon sx={{ fontSize: 28 }} />
                   </Avatar>
                 </motion.div>
                 <Box sx={{ flexGrow: 1 }}>
-                  <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                  <Typography variant="h6" sx={{ 
+                    fontWeight: 700,
+                    color: theme.palette.text.primary,
+                    fontSize: '1.2rem'
+                  }}>
                     {processingStage}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
-                    Processing with advanced OCR and AI parsing...
+                    Advanced AI processing pipeline in progress...
                   </Typography>
                 </Box>
                 <Chip 
                   label={`${processingProgress}%`} 
-                  color="primary" 
-                  variant="outlined"
+                  color="success" 
+                  variant="filled"
+                  sx={{ fontSize: '1rem', fontWeight: 700, px: 2 }}
                 />
               </Box>
               
@@ -772,10 +882,12 @@ const Upload = () => {
                 variant="determinate" 
                 value={processingProgress}
                 sx={{ 
-                  height: 8, 
-                  borderRadius: 4,
+                  height: 12, 
+                  borderRadius: 6,
+                  backgroundColor: theme.palette.mode === 'dark' ? 'rgba(0, 212, 170, 0.1)' : 'rgba(0, 212, 170, 0.1)',
                   '& .MuiLinearProgress-bar': {
-                    borderRadius: 4,
+                    borderRadius: 6,
+                    background: 'linear-gradient(135deg, #00d4aa, #33e4c4)',
                   }
                 }}
               />
@@ -784,75 +896,102 @@ const Upload = () => {
         )}
       </AnimatePresence>
 
-      {/* Debug Information Panel */}
+      {/* Enhanced Debug Information Panel */}
       {debugInfo && (
-        <SlideIn direction="up" delay={0.2}>
-          <Paper sx={{ mb: 4, borderRadius: 3, overflow: 'hidden' }}>
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.2 }}
+        >
+          <Paper sx={{ 
+            mb: 4, 
+            borderRadius: 4, 
+            overflow: 'hidden',
+            backgroundColor: theme.palette.mode === 'dark' ? 'rgba(16, 16, 24, 0.85)' : '#fff',
+            border: '1px solid',
+            borderColor: theme.palette.mode === 'dark' ? 'rgba(233, 69, 96, 0.15)' : 'rgba(200, 200, 200, 0.3)',
+            boxShadow: theme.palette.mode === 'dark' 
+              ? '0 8px 32px rgba(0, 0, 0, 0.3)' 
+              : '0 8px 32px rgba(0, 0, 0, 0.08)',
+          }}>
             <Box sx={{ 
-              p: 2, 
-              bgcolor: 'info.main', 
+              p: 3, 
+              background: 'linear-gradient(135deg, #3742fa, #5352ed)',
               color: 'white',
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center'
             }}>
               <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <DebugIcon sx={{ mr: 1 }} />
-                <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                  Processing Information
+                <DebugIcon sx={{ mr: 2 }} />
+                <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                  Processing Analytics
                 </Typography>
               </Box>
               <Button
                 size="small"
                 variant="outlined"
                 onClick={() => setShowDebugInfo(!showDebugInfo)}
-                sx={{ color: 'white', borderColor: 'white' }}
+                sx={{ color: 'white', borderColor: 'white', '&:hover': { borderColor: 'rgba(255,255,255,0.8)' } }}
               >
                 {showDebugInfo ? 'Hide Details' : 'Show Details'}
               </Button>
             </Box>
             
             <Collapse in={showDebugInfo}>
-              <Box sx={{ p: 3 }}>
-                <Grid container spacing={2}>
+              <Box sx={{ p: 4 }}>
+                <Grid container spacing={4}>
                   <Grid item xs={12} sm={6}>
-                    <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
-                      📊 Processing Stats
+                    <Typography variant="h6" sx={{ fontWeight: 700, mb: 2, color: theme.palette.text.primary }}>
+                      Processing Statistics
                     </Typography>
-                    <Typography variant="body2" sx={{ mb: 0.5 }}>
-                      OCR Method: {debugInfo.ocrMethod || debugInfo.extractionMethod}
-                    </Typography>
-                    <Typography variant="body2" sx={{ mb: 0.5 }}>
-                      Parsing Method: {debugInfo.parsingMethod || 'PDF Processing'}
-                    </Typography>
-                    <Typography variant="body2" sx={{ mb: 0.5 }}>
-                      Text Length: {debugInfo.textLength} characters
-                    </Typography>
-                    <Typography variant="body2">
-                      Processing Time: {debugInfo.processingTime}ms
-                    </Typography>
+                    <Box sx={{ mb: 1 }}>
+                      <Typography variant="body2" sx={{ fontWeight: 600, color: theme.palette.text.primary }}>
+                        OCR Method: <span style={{ color: theme.palette.primary.main }}>{debugInfo.ocrMethod || debugInfo.extractionMethod}</span>
+                      </Typography>
+                    </Box>
+                    <Box sx={{ mb: 1 }}>
+                      <Typography variant="body2" sx={{ fontWeight: 600, color: theme.palette.text.primary }}>
+                        Parsing Method: <span style={{ color: theme.palette.primary.main }}>{debugInfo.parsingMethod || 'PDF Processing'}</span>
+                      </Typography>
+                    </Box>
+                    <Box sx={{ mb: 1 }}>
+                      <Typography variant="body2" sx={{ fontWeight: 600, color: theme.palette.text.primary }}>
+                        Text Length: <span style={{ color: theme.palette.primary.main }}>{debugInfo.textLength} characters</span>
+                      </Typography>
+                    </Box>
+                    <Box>
+                      <Typography variant="body2" sx={{ fontWeight: 600, color: theme.palette.text.primary }}>
+                        Processing Time: <span style={{ color: theme.palette.primary.main }}>{debugInfo.processingTime}ms</span>
+                      </Typography>
+                    </Box>
                   </Grid>
                   <Grid item xs={12} sm={6}>
-                    <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
-                      📄 Extracted Text Preview
+                    <Typography variant="h6" sx={{ fontWeight: 700, mb: 2, color: theme.palette.text.primary }}>
+                      Extracted Text Preview
                     </Typography>
                     <Paper sx={{ 
-                      p: 2, 
-                      bgcolor: 'grey.100', 
-                      maxHeight: 150, 
+                      p: 3, 
+                      backgroundColor: theme.palette.mode === 'dark' ? 'rgba(0, 0, 0, 0.3)' : 'rgba(0, 0, 0, 0.05)',
+                      maxHeight: 200, 
                       overflow: 'auto',
-                      fontSize: '0.75rem',
-                      fontFamily: 'monospace'
+                      fontSize: '0.8rem',
+                      fontFamily: 'monospace',
+                      borderRadius: 2,
+                      border: '1px solid',
+                      borderColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
                     }}>
-                      {debugInfo.ocrPreview || 'No preview available'}
+                      <Typography variant="body2" sx={{ fontFamily: 'monospace', color: theme.palette.text.secondary }}>
+                        {debugInfo.ocrPreview || 'No preview available'}
+                      </Typography>
                     </Paper>
                   </Grid>
                 </Grid>
                 
                 {debugInfo.fileUrl && (
-                  <Box sx={{ mt: 2 }}>
-                    <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
-                      📎 Uploaded File
+                  <Box sx={{ mt: 3 }}>
+                    <Typography variant="h6" sx={{ fontWeight: 700, mb: 2, color: theme.palette.text.primary }}>
+                      Uploaded File
                     </Typography>
                     <a 
                       href={debugInfo.fileUrl} 
@@ -860,849 +999,699 @@ const Upload = () => {
                       rel="noopener noreferrer"
                       style={{ textDecoration: 'none' }}
                     >
-                      <Chip 
-                        icon={<ViewIcon />}
-                        label="View Original File in Cloudinary"
-                        clickable
-                        color="primary"
-                      />
+                      <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                        <Chip 
+                          icon={<ViewIcon />}
+                          label="View Original File in Cloudinary"
+                          clickable
+                          color="primary"
+                          sx={{ fontSize: '0.9rem', py: 2, px: 1 }}
+                        />
+                      </motion.div>
                     </a>
                   </Box>
                 )}
               </Box>
             </Collapse>
           </Paper>
-        </SlideIn>
+        </motion.div>
       )}
 
-      {/* Your Expenses Table - Vanilla Style */}
-      <SlideIn direction="up" delay={0.3}>
-        <div style={{ marginTop: '32px' }}>
-          {/* Header */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <span style={{ fontSize: '24px', marginRight: '8px' }}>📊</span>
-              <h2 style={{ margin: 0, fontSize: '28px', fontWeight: '700', color: '#333' }}>Your Expenses</h2>
-            </div>
-            <button
-              onClick={loadExpenses}
-              disabled={tableLoading}
-              style={{
-                padding: '8px 16px',
-                backgroundColor: tableLoading ? '#ccc' : '#28a745',
-                color: 'white',
-                border: 'none',
-                borderRadius: '6px',
-                cursor: tableLoading ? 'not-allowed' : 'pointer',
-                fontSize: '14px',
-                fontWeight: '600',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px'
-              }}
-            >
-              <RefreshIcon style={{ fontSize: '16px' }} />
-              {tableLoading ? 'Loading...' : 'Refresh'}
-            </button>
-          </div>
+      {/* Enhanced Expenses Table Section */}
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.3 }}
+      >
+        <Paper sx={{ 
+          borderRadius: 4, 
+          overflow: 'hidden',
+          backgroundColor: theme.palette.mode === 'dark' ? 'rgba(16, 16, 24, 0.85)' : '#fff',
+          border: '1px solid',
+          borderColor: theme.palette.mode === 'dark' ? 'rgba(233, 69, 96, 0.15)' : 'rgba(200, 200, 200, 0.3)',
+          boxShadow: theme.palette.mode === 'dark' 
+            ? '0 8px 32px rgba(0, 0, 0, 0.3)' 
+            : '0 8px 32px rgba(0, 0, 0, 0.08)',
+        }}>
+          {/* Enhanced Header */}
+          <Box sx={{ 
+            p: 4, 
+            background: 'linear-gradient(135deg, #e94560, #ff6b88)',
+            color: 'white'
+          }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <AnalyticsIcon sx={{ mr: 2, fontSize: 32 }} />
+                <Box>
+                  <Typography variant="h4" sx={{ fontWeight: 800, fontSize: '1.8rem' }}>
+                    Expense Management
+                  </Typography>
+                  <Typography variant="body2" sx={{ opacity: 0.9, mt: 0.5 }}>
+                    Review and manage your extracted transactions
+                  </Typography>
+                </Box>
+              </Box>
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Button
+                  onClick={loadExpenses}
+                  disabled={tableLoading}
+                  variant="outlined"
+                  startIcon={<RefreshIcon />}
+                  sx={{ 
+                    color: 'white', 
+                    borderColor: 'white',
+                    fontWeight: 600,
+                    '&:hover': { 
+                      borderColor: 'rgba(255,255,255,0.8)',
+                      backgroundColor: 'rgba(255,255,255,0.1)'
+                    }
+                  }}
+                >
+                  {tableLoading ? 'Loading...' : 'Refresh'}
+                </Button>
+              </motion.div>
+            </Box>
+          </Box>
 
           {/* Enhanced Manual Review Alert */}
           {stats.needsReviewCount > 0 && (
-            <Fade in={true}>
-              <div style={{
-                marginBottom: '25px',
-                padding: '20px',
-                backgroundColor: '#f8d7da',
-                color: '#721c24',
-                border: '3px solid #dc3545',
-                borderRadius: '12px',
-                boxShadow: '0 4px 16px rgba(220, 53, 69, 0.2)',
-                animation: 'pulse 2s infinite'
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', marginBottom: '12px' }}>
-                  <span style={{ fontSize: '28px', marginRight: '12px' }}>🚨</span>
-                  <strong style={{ fontSize: '20px' }}>PARSING INCOMPLETE - MANUAL REVIEW REQUIRED</strong>
-                </div>
-                <p style={{ margin: '0 0 12px 0', fontSize: '16px' }}>
-                  <strong>{stats.needsReviewCount}</strong> transaction{stats.needsReviewCount > 1 ? 's' : ''} could not be fully processed from the uploaded document.
-                </p>
-                <p style={{ margin: '0 0 16px 0', fontSize: '14px' }}>
-                  The OCR or AI parsing encountered issues with amount extraction or data recognition. 
-                  Please review and manually enter the missing information using the 
-                  <span style={{ 
-                    backgroundColor: '#dc3545', 
-                    color: 'white', 
-                    padding: '3px 8px', 
-                    borderRadius: '4px',
-                    fontSize: '12px',
-                    margin: '0 4px',
-                    fontWeight: 'bold'
-                  }}>🚨 FIX</span>
-                  buttons below.
-                </p>
-                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                  <span style={{
-                    backgroundColor: '#dc3545',
-                    color: 'white',
-                    padding: '6px 12px',
-                    borderRadius: '6px',
-                    fontSize: '13px',
-                    fontWeight: 'bold'
-                  }}>
-                    {stats.needsReviewCount} Need Review
-                  </span>
-                  <span style={{
-                    backgroundColor: 'transparent',
-                    color: '#721c24',
-                    padding: '6px 12px',
-                    border: '2px solid #dc3545',
-                    borderRadius: '6px',
-                    fontSize: '13px'
-                  }}>
-                    Look for red-bordered rows
-                  </span>
-                </div>
-              </div>
-            </Fade>
-          )}
-
-          {/* Controls */}
-          <div style={{ 
-            display: 'flex', 
-            justifyContent: 'space-between', 
-            alignItems: 'center',
-            marginBottom: '20px',
-            flexWrap: 'wrap',
-            gap: '10px'
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '15px', flexWrap: 'wrap' }}>
-              <div>
-                <label style={{ marginRight: '8px', fontSize: '14px', color: '#666' }}>
-                  Filter:
-                </label>
-                <select 
-                  value={filter} 
-                  onChange={(e) => setFilter(e.target.value)}
-                  style={{ 
-                    padding: '8px 12px', 
-                    borderRadius: '6px', 
-                    border: '2px solid #ddd',
-                    fontSize: '14px',
-                    fontWeight: '500'
-                  }}
-                >
-                  <option value="all">All Expenses</option>
-                  <option value="expense">Expenses Only</option>
-                  <option value="income">Income Only</option>
-                  {stats.needsReviewCount > 0 && (
-                    <option value="needs-fix">🚨 Needs Fix ({stats.needsReviewCount})</option>
-                  )}
-                </select>
-              </div>
-
-              <div>
-                <label style={{ marginRight: '8px', fontSize: '14px', color: '#666' }}>
-                  Sort:
-                </label>
-                <select 
-                  value={sortBy} 
-                  onChange={(e) => setSortBy(e.target.value)}
-                  style={{ 
-                    padding: '8px 12px', 
-                    borderRadius: '6px', 
-                    border: '2px solid #ddd',
-                    marginRight: '8px',
-                    fontSize: '14px',
-                    fontWeight: '500'
-                  }}
-                >
-                  <option value="date">Date</option>
-                  <option value="amount">Amount</option>
-                  <option value="category">Category</option>
-                </select>
-
-                <button
-                  onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
-                  style={{
-                    padding: '8px 12px',
-                    backgroundColor: '#f8f9fa',
-                    border: '2px solid #ddd',
-                    borderRadius: '6px',
-                    cursor: 'pointer',
-                    fontSize: '14px',
-                    fontWeight: '600'
-                  }}
-                >
-                  {sortOrder === 'asc' ? '↑ Asc' : '↓ Desc'}
-                </button>
-              </div>
-            </div>
-
-            {/* Enhanced Summary */}
-            <div style={{ fontSize: '14px', color: '#666', textAlign: 'right' }}>
-              <div style={{ marginBottom: '4px' }}>📊 Total: {filteredExpenses.length} items</div>
-              <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
-                <span style={{ 
-                  color: '#dc3545', 
-                  fontWeight: '700',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '4px'
-                }}>
-                  💸 ₹{stats.totalExpenses.toLocaleString('en-IN')}
-                </span>
-                <span style={{ 
-                  color: '#28a745',
-                  fontWeight: '700',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '4px'
-                }}>
-                  💰 ₹{stats.totalIncome.toLocaleString('en-IN')}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* Table or Empty State */}
-          {tableLoading ? (
-            <div style={{ 
-              textAlign: 'center', 
-              padding: '60px 40px', 
-              color: '#666',
-              backgroundColor: '#f8f9fa',
-              borderRadius: '12px'
-            }}>
-              <div style={{ marginBottom: '16px' }}>
-                <div style={{
-                  width: '40px',
-                  height: '40px',
-                  border: '4px solid #e3f2fd',
-                  borderTop: '4px solid #1976d2',
-                  borderRadius: '50%',
-                  animation: 'spin 1s linear infinite',
-                  margin: '0 auto 16px'
-                }}></div>
-              </div>
-              <h3>Loading expenses...</h3>
-              <p>Please wait while we fetch your transaction data.</p>
-            </div>
-          ) : filteredExpenses.length === 0 ? (
-            <div style={{ 
-              textAlign: 'center', 
-              padding: '60px 40px', 
-              color: '#666',
-              backgroundColor: '#f8f9fa',
-              borderRadius: '12px',
-              border: '2px dashed #ddd'
-            }}>
-              <div style={{ fontSize: '48px', marginBottom: '16px' }}>📊</div>
-              <h3 style={{ margin: '0 0 12px 0', fontSize: '24px' }}>
-                {expenses.length === 0 ? 'No expenses found' : 'No matching expenses'}
-              </h3>
-              <p style={{ margin: '0 0 24px 0', fontSize: '16px' }}>
-                {expenses.length === 0 
-                  ? 'Upload a receipt or bank statement to get started with tracking your expenses!'
-                  : 'Try adjusting your filters to see more results.'
-                }
-              </p>
-              {expenses.length === 0 && (
-                <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
-                  <label htmlFor="receipt-upload">
-                    <button style={{
-                      padding: '12px 24px',
-                      backgroundColor: '#1976d2',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '8px',
-                      cursor: 'pointer',
-                      fontSize: '16px',
-                      fontWeight: '600'
-                    }}>
-                      📱 Upload Receipt
-                    </button>
-                  </label>
-                  <label htmlFor="statement-upload">
-                    <button style={{
-                      padding: '12px 24px',
-                      backgroundColor: '#9c27b0',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '8px',
-                      cursor: 'pointer',
-                      fontSize: '16px',
-                      fontWeight: '600'
-                    }}>
-                      🏦 Upload PDF
-                    </button>
-                  </label>
-                </div>
-              )}
-            </div>
-          ) : (
-            <>
-              {/* Enhanced Vanilla-Style Table */}
-              <div style={{ 
-                overflowX: 'auto',
-                boxShadow: '0 4px 20px rgba(0,0,0,0.12)',
-                borderRadius: '12px',
-                border: '2px solid #e3f2fd',
-                backgroundColor: 'white'
-              }}>
-                <table style={{ 
-                  width: '100%', 
-                  borderCollapse: 'collapse',
-                  backgroundColor: 'white',
-                  fontSize: '14px'
-                }}>
-                  <thead style={{ 
-                    background: 'linear-gradient(135deg, #1976d2, #1565c0)', 
-                    color: 'white' 
-                  }}>
-                    <tr>
-                      <th style={{ 
-                        padding: '18px 15px', 
-                        textAlign: 'left', 
-                        fontWeight: '700',
-                        fontSize: '15px',
-                        borderBottom: 'none',
-                        minWidth: '120px'
-                      }}>Date</th>
-                      <th style={{ 
-                        padding: '18px 15px', 
-                        textAlign: 'left', 
-                        fontWeight: '700',
-                        fontSize: '15px',
-                        borderBottom: 'none',
-                        minWidth: '150px'
-                      }}>Category</th>
-                      <th style={{ 
-                        padding: '18px 15px', 
-                        textAlign: 'center', 
-                        fontWeight: '700',
-                        fontSize: '15px',
-                        borderBottom: 'none',
-                        minWidth: '100px'
-                      }}>Type</th>
-                      <th style={{ 
-                        padding: '18px 15px', 
-                        textAlign: 'right', 
-                        fontWeight: '700',
-                        fontSize: '15px',
-                        borderBottom: 'none',
-                        minWidth: '120px'
-                      }}>Amount</th>
-                      <th style={{ 
-                        padding: '18px 15px', 
-                        textAlign: 'left', 
-                        fontWeight: '700',
-                        fontSize: '15px',
-                        borderBottom: 'none',
-                        minWidth: '200px'
-                      }}>Description</th>
-                      <th style={{ 
-                        padding: '18px 15px', 
-                        textAlign: 'center', 
-                        fontWeight: '700',
-                        fontSize: '15px',
-                        borderBottom: 'none',
-                        minWidth: '100px'
-                      }}>File</th>
-                      <th style={{ 
-                        padding: '18px 15px', 
-                        textAlign: 'center', 
-                        fontWeight: '700',
-                        fontSize: '15px',
-                        borderBottom: 'none',
-                        minWidth: '140px'
-                      }}>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredExpenses.map((expense, index) => {
-                      const isEditing = editingId === expense._id;
-                      const needsFix = expense.needsManualReview || !expense.amount || expense.amount === 0;
-                      
-                      return (
-                        <tr 
-                          key={expense._id || index} 
-                          style={{ 
-                            borderBottom: '1px solid #f0f0f0',
-                            backgroundColor: needsFix ? '#ffebee' : (index % 2 === 0 ? '#fafafa' : 'white'),
-                            borderLeft: needsFix ? '6px solid #d32f2f' : '6px solid transparent',
-                            transition: 'all 0.3s ease'
-                          }}
-                          onMouseEnter={(e) => {
-                            if (!needsFix) {
-                              e.currentTarget.style.backgroundColor = '#f5f5f5';
-                            }
-                          }}
-                          onMouseLeave={(e) => {
-                            if (!needsFix) {
-                              e.currentTarget.style.backgroundColor = index % 2 === 0 ? '#fafafa' : 'white';
-                            }
-                          }}
-                        >
-                          {/* Date Column */}
-                          <td style={{ 
-                            padding: '16px 15px', 
-                            fontSize: '14px',
-                            fontWeight: '600',
-                            color: '#333'
-                          }}>
-                            {expense.date 
-                              ? new Date(expense.date).toLocaleDateString('en-IN', {
-                                  day: '2-digit',
-                                  month: 'short',
-                                  year: 'numeric'
-                                })
-                              : 'Invalid Date'
-                            }
-                            {needsFix && (
-                              <div style={{ 
-                                fontSize: '11px', 
-                                color: '#d32f2f', 
-                                fontWeight: '500',
-                                marginTop: '2px'
-                              }}>
-                                ⚠️ Review Required
-                              </div>
-                            )}
-                          </td>
-                          
-                          {/* Category Column */}
-                          <td style={{ 
-                            padding: '16px 15px', 
-                            fontWeight: '600', 
-                            fontSize: '14px'
-                          }}>
-                            {isEditing ? (
-                              <select
-                                value={editingValues.category}
-                                onChange={(e) => setEditingValues({...editingValues, category: e.target.value})}
-                                style={{ 
-                                  width: '100%', 
-                                  padding: '8px 10px', 
-                                  fontSize: '14px',
-                                  border: '3px solid #1976d2',
-                                  borderRadius: '6px',
-                                  fontWeight: '600'
-                                }}
-                              >
-                                {categories.map(cat => (
-                                  <option key={cat} value={cat}>{cat}</option>
-                                ))}
-                              </select>
-                            ) : (
-                              <div>
-                                <div style={{ 
-                                  color: '#333',
-                                  fontWeight: '600'
-                                }}>
-                                  {expense.category || 'N/A'}
-                                </div>
-                                {expense.ocrMethod && (
-                                  <div style={{ 
-                                    fontSize: '11px', 
-                                    color: '#666',
-                                    marginTop: '2px'
-                                  }}>
-                                    {expense.ocrMethod}
-                                  </div>
-                                )}
-                              </div>
-                            )}
-                          </td>
-                          
-                          {/* Type Column */}
-                          <td style={{ padding: '16px 15px', textAlign: 'center' }}>
-                            <span style={{ 
-                              color: expense.type === 'income' ? '#2e7d32' : '#d32f2f',
-                              fontWeight: '800',
-                              padding: '8px 16px',
-                              borderRadius: '25px',
-                              backgroundColor: expense.type === 'income' ? '#e8f5e9' : '#ffebee',
-                              fontSize: '12px',
-                              textTransform: 'uppercase',
-                              letterSpacing: '1px',
-                              border: `2px solid ${expense.type === 'income' ? '#4caf50' : '#f44336'}`,
-                              display: 'inline-block',
-                              minWidth: '80px'
-                            }}>
-                              {expense.type === 'income' ? '💰 INCOME' : '💸 EXPENSE'}
-                            </span>
-                          </td>
-                          
-                          {/* Amount Column */}
-                          <td style={{ 
-                            padding: '16px 15px', 
-                            textAlign: 'right', 
-                            fontWeight: '700',
-                            fontSize: '15px'
-                          }}>
-                            {isEditing ? (
-                              <input
-                                type="number"
-                                min="0"
-                                step="0.01"
-                                value={editingValues.amount}
-                                onChange={(e) => setEditingValues({...editingValues, amount: e.target.value})}
-                                style={{ 
-                                  width: '110px', 
-                                  padding: '10px',
-                                  textAlign: 'right',
-                                  border: '3px solid #1976d2',
-                                  borderRadius: '8px',
-                                  fontSize: '14px',
-                                  fontWeight: '700',
-                                  color: '#1976d2'
-                                }}
-                                placeholder="0.00"
-                                autoFocus
-                              />
-                            ) : needsFix ? (
-                              <div style={{ textAlign: 'right' }}>
-                                <div style={{ 
-                                  color: '#d32f2f', 
-                                  fontStyle: 'italic',
-                                  fontWeight: '800',
-                                  fontSize: '14px',
-                                  padding: '6px 12px',
-                                  backgroundColor: '#ffcdd2',
-                                  borderRadius: '6px',
-                                  border: '2px solid #f44336',
-                                  display: 'inline-block'
-                                }}>
-                                  ⚠️ Enter Amount
-                                </div>
-                              </div>
-                            ) : (
-                              <div style={{ textAlign: 'right' }}>
-                                <div style={{ 
-                                  color: expense.type === 'income' ? '#2e7d32' : '#d32f2f',
-                                  fontSize: '16px',
-                                  fontWeight: '800'
-                                }}>
-                                  ₹{Number(expense.amount || 0).toLocaleString('en-IN')}
-                                </div>
-                                {expense.aiParsed && (
-                                  <div style={{ 
-                                    fontSize: '10px', 
-                                    color: '#666',
-                                    marginTop: '2px'
-                                  }}>
-                                    🤖 AI Parsed
-                                  </div>
-                                )}
-                              </div>
-                            )}
-                          </td>
-                          
-                          {/* Description Column */}
-                          <td style={{ 
-                            padding: '16px 15px', 
-                            maxWidth: '220px',
-                            fontSize: '14px',
-                            color: '#555'
-                          }}>
-                            {isEditing ? (
-                              <input
-                                type="text"
-                                value={editingValues.description}
-                                onChange={(e) => setEditingValues({...editingValues, description: e.target.value})}
-                                style={{ 
-                                  width: '100%', 
-                                  padding: '10px',
-                                  border: '3px solid #1976d2',
-                                  borderRadius: '6px',
-                                  fontSize: '14px'
-                                }}
-                                placeholder="Enter description..."
-                              />
-                            ) : (
-                              <div style={{ 
-                                overflow: 'hidden',
-                                textOverflow: 'ellipsis',
-                                whiteSpace: 'nowrap'
-                              }} title={expense.description}>
-                                {expense.description || `${expense.category} ${expense.type}`}
-                              </div>
-                            )}
-                          </td>
-                          
-                          {/* File Column - ENHANCED CLOUDINARY LINK */}
-                          <td style={{ padding: '16px 15px', textAlign: 'center' }}>
-                            {expense.fileUrl ? (
-                              <a 
-                                href={expense.fileUrl} 
-                                target="_blank" 
-                                rel="noopener noreferrer"
-                                onClick={(e) => {
-                                  // Enhanced URL validation for Cloudinary
-                                  if (!expense.fileUrl.includes('cloudinary.com') && 
-                                      !expense.fileUrl.includes('res.cloudinary.com')) {
-                                    e.preventDefault();
-                                    alert('Invalid file URL. Please contact support.');
-                                    return;
-                                  }
-                                  console.log('🔗 Opening Cloudinary file:', expense.fileUrl);
-                                }}
-                                style={{ 
-                                  color: '#1976d2', 
-                                  textDecoration: 'none',
-                                  padding: '8px 14px',
-                                  border: '2px solid #1976d2',
-                                  borderRadius: '8px',
-                                  fontSize: '12px',
-                                  display: 'inline-block',
-                                  transition: 'all 0.3s ease',
-                                  fontWeight: '700',
-                                  backgroundColor: '#e3f2fd'
-                                }}
-                                onMouseEnter={(e) => {
-                                  e.target.style.backgroundColor = '#1976d2';
-                                  e.target.style.color = 'white';
-                                }}
-                                onMouseLeave={(e) => {
-                                  e.target.style.backgroundColor = '#e3f2fd';
-                                  e.target.style.color = '#1976d2';
-                                }}
-                              >
-                                📎 View File
-                              </a>
-                            ) : (
-                              <div style={{ 
-                                color: '#999', 
-                                fontSize: '12px',
-                                fontStyle: 'italic',
-                                padding: '8px'
-                              }}>
-                                No file
-                              </div>
-                            )}
-                          </td>
-                          
-                          {/* Actions Column */}
-                          <td style={{ padding: '16px 15px', textAlign: 'center' }}>
-                            {isEditing ? (
-                              <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
-                                <button
-                                  onClick={() => handleSaveEdit(expense._id)}
-                                  disabled={updateLoading === expense._id}
-                                  style={{
-                                    padding: '8px 14px',
-                                    backgroundColor: '#2e7d32',
-                                    color: 'white',
-                                    border: 'none',
-                                    borderRadius: '8px',
-                                    cursor: 'pointer',
-                                    fontSize: '12px',
-                                    fontWeight: 'bold',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '4px',
-                                    minWidth: '70px',
-                                    justifyContent: 'center'
-                                  }}
-                                >
-                                  {updateLoading === expense._id ? '⏳' : '✅'} Save
-                                </button>
-                                <button
-                                  onClick={handleCancelEdit}
-                                  style={{
-                                    padding: '8px 14px',
-                                    backgroundColor: '#757575',
-                                    color: 'white',
-                                    border: 'none',
-                                    borderRadius: '8px',
-                                    cursor: 'pointer',
-                                    fontSize: '12px',
-                                    fontWeight: 'bold',
-                                    minWidth: '70px'
-                                  }}
-                                >
-                                  ❌ Cancel
-                                </button>
-                              </div>
-                            ) : (
-                              <div style={{ display: 'flex', gap: '6px', justifyContent: 'center' }}>
-                                <button
-                                  onClick={() => handleEdit(expense)}
-                                  style={{
-                                    padding: '8px 14px',
-                                    backgroundColor: needsFix ? '#d32f2f' : '#1976d2',
-                                    color: 'white',
-                                    border: 'none',
-                                    borderRadius: '8px',
-                                    cursor: 'pointer',
-                                    fontSize: '12px',
-                                    fontWeight: 'bold',
-                                    boxShadow: needsFix ? '0 4px 12px rgba(211, 47, 47, 0.4)' : '0 2px 8px rgba(25, 118, 210, 0.3)',
-                                    minWidth: '70px',
-                                    animation: needsFix ? 'pulse 2s infinite' : 'none'
-                                  }}
-                                  title={needsFix ? 'Fix missing amount and details' : 'Edit expense'}
-                                >
-                                  {needsFix ? '🚨 FIX' : '✏️ Edit'}
-                                </button>
-                                <button
-                                  onClick={() => handleDelete(expense)}
-                                  disabled={deleteLoading === expense._id}
-                                  style={{
-                                    padding: '8px 14px',
-                                    backgroundColor: deleteLoading === expense._id ? '#bdbdbd' : '#d32f2f',
-                                    color: 'white',
-                                    border: 'none',
-                                    borderRadius: '8px',
-                                    cursor: deleteLoading === expense._id ? 'not-allowed' : 'pointer',
-                                    fontSize: '12px',
-                                    fontWeight: 'bold',
-                                    minWidth: '50px'
-                                  }}
-                                >
-                                  {deleteLoading === expense._id ? '⏳' : '🗑️'}
-                                </button>
-                              </div>
-                            )}
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-
-              {/* Enhanced Net Balance Card */}
-              <div style={{ 
-                marginTop: '32px', 
-                padding: '28px', 
-                background: 'linear-gradient(135deg, #ffffff, #f8f9fa)',
-                borderRadius: '16px',
-                textAlign: 'center',
-                boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
-                border: '2px solid #e3f2fd'
-              }}>
-                <div style={{ 
-                  fontSize: '32px',
-                  fontWeight: '800',
-                  color: (stats.totalIncome - stats.totalExpenses) >= 0 ? '#2e7d32' : '#d32f2f',
-                  marginBottom: '12px',
-                  textShadow: '0 2px 4px rgba(0,0,0,0.1)'
-                }}>
-                  Net Balance: ₹{(stats.totalIncome - stats.totalExpenses).toLocaleString('en-IN')}
-                </div>
-                
-                <div style={{ display: 'flex', justifyContent: 'center', gap: '32px', marginBottom: '16px' }}>
-                  <div style={{ textAlign: 'center' }}>
-                    <div style={{ fontSize: '18px', fontWeight: '700', color: '#2e7d32' }}>
-                      ₹{stats.totalIncome.toLocaleString('en-IN')}
-                    </div>
-                    <div style={{ fontSize: '12px', color: '#666', fontWeight: '600' }}>
-                      💰 Total Income
-                    </div>
-                  </div>
-                  <div style={{ textAlign: 'center' }}>
-                    <div style={{ fontSize: '18px', fontWeight: '700', color: '#d32f2f' }}>
-                      ₹{stats.totalExpenses.toLocaleString('en-IN')}
-                    </div>
-                    <div style={{ fontSize: '12px', color: '#666', fontWeight: '600' }}>
-                      💸 Total Expenses
-                    </div>
-                  </div>
-                </div>
-                
-                {stats.needsReviewCount > 0 && (
-                  <div style={{ 
-                    fontSize: '14px', 
-                    color: '#d32f2f', 
-                    fontWeight: '700',
-                    padding: '10px 20px',
-                    backgroundColor: '#ffebee',
-                    borderRadius: '10px',
-                    border: '2px solid #ffcdd2',
-                    display: 'inline-block',
-                    animation: 'pulse 2s infinite'
-                  }}>
-                    ⚠️ Balance excludes {stats.needsReviewCount} transaction{stats.needsReviewCount > 1 ? 's' : ''} with missing amounts
-                  </div>
-                )}
-              </div>
-            </>
-          )}
-        </div>
-      </SlideIn>
-
-      {/* Upload History */}
-      {uploadResults.length > 0 && (
-        <SlideIn direction="up" delay={0.4}>
-          <Paper sx={{ borderRadius: 3, overflow: 'hidden', mt: 4 }}>
-            <Box sx={{ p: 2, bgcolor: 'success.main', color: 'white' }}>
-              <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                📂 Recent Uploads ({uploadResults.length})
-              </Typography>
+            <Box sx={{ p: 4, backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 77, 87, 0.1)' : '#ffebee' }}>
+              <Alert 
+                severity="error" 
+                sx={{ 
+                  borderRadius: 3,
+                  backgroundColor: 'transparent',
+                  border: '2px solid #f44336',
+                  '& .MuiAlert-icon': { fontSize: 28 }
+                }}
+              >
+                <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>
+                  Manual Review Required
+                </Typography>
+                <Typography variant="body2" sx={{ mb: 2 }}>
+                  <strong>{stats.needsReviewCount}</strong> transaction{stats.needsReviewCount > 1 ? 's' : ''} need your attention. 
+                  The AI couldn't extract complete information from the uploaded documents.
+                </Typography>
+                <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+                  <Chip 
+                    label={`${stats.needsReviewCount} Need Review`}
+                    color="error"
+                    variant="filled"
+                    sx={{ fontWeight: 700 }}
+                  />
+                  <Chip 
+                    label="Look for red-bordered rows"
+                    color="error"
+                    variant="outlined"
+                  />
+                </Box>
+              </Alert>
             </Box>
-            
-            <Box sx={{ maxHeight: 300, overflow: 'auto' }}>
-              {uploadResults.map((result, index) => (
-                <Box 
-                  key={result.id}
-                  sx={{ 
-                    p: 2, 
-                    borderBottom: '1px solid #f0f0f0',
-                    '&:last-child': { borderBottom: 'none' }
-                  }}
-                >
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <Box>
-                      <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-                        {result.filename}
+          )}
+
+          {/* Enhanced Controls */}
+          <Box sx={{ p: 4, borderBottom: '1px solid', borderColor: 'divider' }}>
+            <Grid container spacing={3} alignItems="center">
+              <Grid item xs={12} sm={6} md={3}>
+                <Box>
+                  <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 600, color: theme.palette.text.primary }}>
+                    Filter by Type
+                  </Typography>
+                  <select 
+                    value={filter} 
+                    onChange={(e) => setFilter(e.target.value)}
+                    style={{ 
+                      width: '100%',
+                      padding: '12px 16px', 
+                      borderRadius: '8px', 
+                      border: `2px solid ${theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}`,
+                      backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.05)' : 'white',
+                      color: theme.palette.text.primary,
+                      fontSize: '14px',
+                      fontWeight: '600'
+                    }}
+                  >
+                    <option value="all">All Expenses</option>
+                    <option value="expense">Expenses Only</option>
+                    <option value="income">Income Only</option>
+                    {stats.needsReviewCount > 0 && (
+                      <option value="needs-fix">🚨 Needs Fix ({stats.needsReviewCount})</option>
+                    )}
+                  </select>
+                </Box>
+              </Grid>
+
+              <Grid item xs={12} sm={6} md={3}>
+                <Box>
+                  <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 600, color: theme.palette.text.primary }}>
+                    Sort by
+                  </Typography>
+                  <Box sx={{ display: 'flex', gap: 1 }}>
+                    <select 
+                      value={sortBy} 
+                      onChange={(e) => setSortBy(e.target.value)}
+                      style={{ 
+                        flex: 1,
+                        padding: '12px 16px', 
+                        borderRadius: '8px', 
+                        border: `2px solid ${theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}`,
+                        backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.05)' : 'white',
+                        color: theme.palette.text.primary,
+                        fontSize: '14px',
+                        fontWeight: '600'
+                      }}
+                    >
+                      <option value="date">Date</option>
+                      <option value="amount">Amount</option>
+                      <option value="category">Category</option>
+                    </select>
+
+                    <Button
+                      onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+                      variant="outlined"
+                      sx={{ minWidth: 'auto', px: 2 }}
+                    >
+                      {sortOrder === 'asc' ? '↑' : '↓'}
+                    </Button>
+                  </Box>
+                </Box>
+              </Grid>
+
+              <Grid item xs={12} md={6}>
+                <Box sx={{ textAlign: { xs: 'left', md: 'right' } }}>
+                  <Typography variant="h6" sx={{ fontWeight: 700, mb: 1, color: theme.palette.text.primary }}>
+                    Summary
+                  </Typography>
+                  <Box sx={{ display: 'flex', gap: 3, justifyContent: { xs: 'flex-start', md: 'flex-end' }, flexWrap: 'wrap' }}>
+                    <Box sx={{ textAlign: 'center' }}>
+                      <Typography variant="h6" sx={{ fontWeight: 800, color: '#f44336' }}>
+                        ₹{stats.totalExpenses.toLocaleString('en-IN')}
                       </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        {result.message}
-                      </Typography>
-                      <Typography variant="caption" color="text.secondary">
-                        {new Date(result.timestamp).toLocaleString()}
-                      </Typography>
+                      <Typography variant="caption" color="text.secondary">Total Expenses</Typography>
                     </Box>
-                    <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-                      <Chip 
-                        label={result.type} 
-                        size="small" 
-                        color={result.type === 'receipt' ? 'primary' : 'secondary'}
-                      />
-                      <Chip 
-                        icon={result.status === 'success' ? <SuccessIcon /> : <ErrorIcon />}
-                        label={result.status} 
-                        size="small" 
-                        color={result.status === 'success' ? 'success' : 'error'}
-                      />
-                      {result.fileUrl && (
-                        <a 
-                          href={result.fileUrl} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          style={{ textDecoration: 'none' }}
-                        >
-                          <Chip 
-                            icon={<ViewIcon />}
-                            label="View" 
-                            size="small" 
-                            clickable
-                            variant="outlined"
-                            color="primary"
-                          />
-                        </a>
-                      )}
+                    <Box sx={{ textAlign: 'center' }}>
+                      <Typography variant="h6" sx={{ fontWeight: 800, color: '#4caf50' }}>
+                        ₹{stats.totalIncome.toLocaleString('en-IN')}
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary">Total Income</Typography>
+                    </Box>
+                    <Box sx={{ textAlign: 'center' }}>
+                      <Typography variant="body2" sx={{ fontWeight: 600, color: theme.palette.text.secondary }}>
+                        {filteredExpenses.length} of {stats.totalItems} items
+                      </Typography>
                     </Box>
                   </Box>
                 </Box>
+              </Grid>
+            </Grid>
+          </Box>
+
+          {/* Enhanced Table Content */}
+          <Box sx={{ p: 4 }}>
+            {tableLoading ? (
+              <Box sx={{ textAlign: 'center', py: 8 }}>
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
+                  style={{ marginBottom: 24 }}
+                >
+                  <Avatar sx={{ width: 64, height: 64, bgcolor: 'primary.main', mx: 'auto' }}>
+                    <RefreshIcon sx={{ fontSize: 32 }} />
+                  </Avatar>
+                </motion.div>
+                <Typography variant="h6" sx={{ fontWeight: 700, mb: 1, color: theme.palette.text.primary }}>
+                  Loading Transaction Data
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Fetching your expense records from the database...
+                </Typography>
+              </Box>
+            ) : filteredExpenses.length === 0 ? (
+              <Box sx={{ textAlign: 'center', py: 8 }}>
+                <Typography variant="h1" sx={{ fontSize: 80, mb: 2 }}>📊</Typography>
+                <Typography variant="h5" sx={{ fontWeight: 700, mb: 2, color: theme.palette.text.primary }}>
+                  {expenses.length === 0 ? 'No expenses found' : 'No matching expenses'}
+                </Typography>
+                <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
+                  {expenses.length === 0 
+                    ? 'Upload a receipt or bank statement to get started with expense tracking!'
+                    : 'Try adjusting your filters to see more results.'
+                  }
+                </Typography>
+                {expenses.length === 0 && (
+                  <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
+                    <label htmlFor="receipt-upload">
+                      <Button variant="contained" sx={{ px: 4, py: 1.5 }}>
+                        📱 Upload Receipt
+                      </Button>
+                    </label>
+                    <label htmlFor="statement-upload">
+                      <Button variant="contained" color="secondary" sx={{ px: 4, py: 1.5 }}>
+                        🏦 Upload PDF
+                      </Button>
+                    </label>
+                  </Box>
+                )}
+              </Box>
+            ) : (
+              <>
+                {/* Enhanced Responsive Table */}
+                <Box sx={{ overflowX: 'auto' }}>
+                  <table style={{ 
+                    width: '100%', 
+                    borderCollapse: 'collapse',
+                    fontSize: '14px'
+                  }}>
+                    <thead>
+                      <tr style={{ 
+                        background: 'linear-gradient(135deg, #1976d2, #1565c0)', 
+                        color: 'white' 
+                      }}>
+                        <th style={{ padding: '18px 15px', textAlign: 'left', fontWeight: '700', fontSize: '15px', minWidth: '120px' }}>
+                          Date
+                        </th>
+                        <th style={{ padding: '18px 15px', textAlign: 'left', fontWeight: '700', fontSize: '15px', minWidth: '150px' }}>
+                          Category
+                        </th>
+                        <th style={{ padding: '18px 15px', textAlign: 'center', fontWeight: '700', fontSize: '15px', minWidth: '100px' }}>
+                          Type
+                        </th>
+                        <th style={{ padding: '18px 15px', textAlign: 'right', fontWeight: '700', fontSize: '15px', minWidth: '120px' }}>
+                          Amount
+                        </th>
+                        <th style={{ padding: '18px 15px', textAlign: 'left', fontWeight: '700', fontSize: '15px', minWidth: '200px' }}>
+                          Description
+                        </th>
+                        <th style={{ padding: '18px 15px', textAlign: 'center', fontWeight: '700', fontSize: '15px', minWidth: '100px' }}>
+                          File
+                        </th>
+                        <th style={{ padding: '18px 15px', textAlign: 'center', fontWeight: '700', fontSize: '15px', minWidth: '140px' }}>
+                          Actions
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredExpenses.map((expense, index) => {
+                        const isEditing = editingId === expense._id;
+                        const needsFix = expense.needsManualReview || !expense.amount || expense.amount === 0;
+                        
+                        return (
+                          <motion.tr 
+                            key={expense._id || index}
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: index * 0.05, duration: 0.3 }}
+                            style={{ 
+                              borderBottom: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}`,
+                              backgroundColor: needsFix 
+                                ? (theme.palette.mode === 'dark' ? 'rgba(255, 87, 87, 0.1)' : '#ffebee')
+                                : (index % 2 === 0 
+                                  ? (theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.02)' : '#fafafa')
+                                  : 'transparent'),
+                              borderLeft: needsFix ? '6px solid #f44336' : '6px solid transparent',
+                              transition: 'all 0.3s ease'
+                            }}
+                          >
+                            {/* Date Column */}
+                            <td style={{ padding: '16px 15px' }}>
+                              <Typography variant="body2" sx={{ fontWeight: 600, color: theme.palette.text.primary }}>
+                                {expense.date 
+                                  ? new Date(expense.date).toLocaleDateString('en-IN', {
+                                      day: '2-digit',
+                                      month: 'short',
+                                      year: 'numeric'
+                                    })
+                                  : 'Invalid Date'
+                                }
+                              </Typography>
+                              {needsFix && (
+                                <Typography variant="caption" sx={{ color: '#f44336', fontWeight: 600 }}>
+                                  ⚠️ Review Required
+                                </Typography>
+                              )}
+                            </td>
+                            
+                            {/* Category Column */}
+                            <td style={{ padding: '16px 15px' }}>
+                              {isEditing ? (
+                                <select
+                                  value={editingValues.category}
+                                  onChange={(e) => setEditingValues({...editingValues, category: e.target.value})}
+                                  style={{ 
+                                    width: '100%', 
+                                    padding: '8px 12px', 
+                                    fontSize: '14px',
+                                    border: '3px solid #1976d2',
+                                    borderRadius: '6px',
+                                    backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'white',
+                                    color: theme.palette.text.primary,
+                                    fontWeight: '600'
+                                  }}
+                                >
+                                  {categories.map(cat => (
+                                    <option key={cat} value={cat}>{cat}</option>
+                                  ))}
+                                </select>
+                              ) : (
+                                <Box>
+                                  <Typography variant="body2" sx={{ fontWeight: 600, color: theme.palette.text.primary }}>
+                                    {expense.category || 'N/A'}
+                                  </Typography>
+                                  {expense.ocrMethod && (
+                                    <Typography variant="caption" color="text.secondary">
+                                      {expense.ocrMethod}
+                                    </Typography>
+                                  )}
+                                </Box>
+                              )}
+                            </td>
+                            
+                            {/* Type Column */}
+                            <td style={{ padding: '16px 15px', textAlign: 'center' }}>
+                              <Chip
+                                label={expense.type === 'income' ? 'INCOME' : 'EXPENSE'}
+                                color={expense.type === 'income' ? 'success' : 'error'}
+                                variant="filled"
+                                size="small"
+                                sx={{ 
+                                  fontWeight: 700,
+                                  fontSize: '11px',
+                                  minWidth: '80px'
+                                }}
+                              />
+                            </td>
+                            
+                            {/* Amount Column */}
+                            <td style={{ padding: '16px 15px', textAlign: 'right' }}>
+                              {isEditing ? (
+                                <input
+                                  type="number"
+                                  min="0"
+                                  step="0.01"
+                                  value={editingValues.amount}
+                                  onChange={(e) => setEditingValues({...editingValues, amount: e.target.value})}
+                                  style={{ 
+                                    width: '110px', 
+                                    padding: '10px',
+                                    textAlign: 'right',
+                                    border: '3px solid #1976d2',
+                                    borderRadius: '8px',
+                                    fontSize: '14px',
+                                    fontWeight: '700',
+                                    backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'white',
+                                    color: theme.palette.text.primary
+                                  }}
+                                  placeholder="0.00"
+                                  autoFocus
+                                />
+                              ) : needsFix ? (
+                                <Chip
+                                  label="Enter Amount"
+                                  color="error"
+                                  variant="outlined"
+                                  size="small"
+                                  icon={<WarningIcon />}
+                                />
+                              ) : (
+                                <Box>
+                                  <Typography variant="body1" sx={{ 
+                                    fontWeight: 800,
+                                    color: expense.type === 'income' ? '#4caf50' : '#f44336',
+                                    fontSize: '16px'
+                                  }}>
+                                    ₹{Number(expense.amount || 0).toLocaleString('en-IN')}
+                                  </Typography>
+                                  {expense.aiParsed && (
+                                    <Typography variant="caption" color="text.secondary">
+                                      🤖 AI Parsed
+                                    </Typography>
+                                  )}
+                                </Box>
+                              )}
+                            </td>
+                            
+                            {/* Description Column */}
+                            <td style={{ padding: '16px 15px', maxWidth: '220px' }}>
+                              {isEditing ? (
+                                <input
+                                  type="text"
+                                  value={editingValues.description}
+                                  onChange={(e) => setEditingValues({...editingValues, description: e.target.value})}
+                                  style={{ 
+                                    width: '100%', 
+                                    padding: '10px',
+                                    border: '3px solid #1976d2',
+                                    borderRadius: '6px',
+                                    fontSize: '14px',
+                                    backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'white',
+                                    color: theme.palette.text.primary
+                                  }}
+                                  placeholder="Enter description..."
+                                />
+                              ) : (
+                                <Typography 
+                                  variant="body2" 
+                                  sx={{ 
+                                    color: theme.palette.text.secondary,
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                    whiteSpace: 'nowrap'
+                                  }} 
+                                  title={expense.description}
+                                >
+                                  {expense.description || `${expense.category} ${expense.type}`}
+                                </Typography>
+                              )}
+                            </td>
+                            
+                            {/* File Column */}
+                            <td style={{ padding: '16px 15px', textAlign: 'center' }}>
+                              {expense.fileUrl ? (
+                                <a 
+                                  href={expense.fileUrl} 
+                                  target="_blank" 
+                                  rel="noopener noreferrer"
+                                  style={{ textDecoration: 'none' }}
+                                >
+                                  <Chip
+                                    icon={<ViewIcon />}
+                                    label="View"
+                                    clickable
+                                    color="primary"
+                                    variant="outlined"
+                                    size="small"
+                                  />
+                                </a>
+                              ) : (
+                                <Typography variant="caption" color="text.disabled">
+                                  No file
+                                </Typography>
+                              )}
+                            </td>
+                            
+                            {/* Actions Column */}
+                            <td style={{ padding: '16px 15px', textAlign: 'center' }}>
+                              {isEditing ? (
+                                <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
+                                  <Button
+                                    onClick={() => handleSaveEdit(expense._id)}
+                                    disabled={updateLoading === expense._id}
+                                    size="small"
+                                    variant="contained"
+                                    color="success"
+                                    startIcon={updateLoading === expense._id ? <RefreshIcon /> : <SuccessIcon />}
+                                  >
+                                    Save
+                                  </Button>
+                                  <Button
+                                    onClick={handleCancelEdit}
+                                    size="small"
+                                    variant="outlined"
+                                    color="error"
+                                  >
+                                    Cancel
+                                  </Button>
+                                </Box>
+                              ) : (
+                                <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
+                                  <Button
+                                    onClick={() => handleEdit(expense)}
+                                    size="small"
+                                    variant={needsFix ? "contained" : "outlined"}
+                                    color={needsFix ? "error" : "primary"}
+                                    startIcon={<EditIcon />}
+                                  >
+                                    {needsFix ? 'FIX' : 'Edit'}
+                                  </Button>
+                                  <Button
+                                    onClick={() => handleDelete(expense)}
+                                    disabled={deleteLoading === expense._id}
+                                    size="small"
+                                    variant="outlined"
+                                    color="error"
+                                    startIcon={<DeleteIcon />}
+                                  >
+                                    {deleteLoading === expense._id ? '...' : 'Delete'}
+                                  </Button>
+                                </Box>
+                              )}
+                            </td>
+                          </motion.tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </Box>
+
+                {/* Enhanced Net Balance Summary */}
+                <Box sx={{ 
+                  mt: 4, 
+                  p: 4, 
+                  borderRadius: 3,
+                  background: theme.palette.mode === 'dark' 
+                    ? 'linear-gradient(135deg, rgba(233, 69, 96, 0.1), rgba(0, 212, 170, 0.1))'
+                    : 'linear-gradient(135deg, #f8f9ff, #ffffff)',
+                  border: '2px solid',
+                  borderColor: theme.palette.mode === 'dark' ? 'rgba(233, 69, 96, 0.2)' : 'rgba(233, 69, 96, 0.1)',
+                  textAlign: 'center'
+                }}>
+                  <Typography variant="h4" sx={{ 
+                    fontWeight: 800,
+                    color: (stats.totalIncome - stats.totalExpenses) >= 0 ? '#4caf50' : '#f44336',
+                    mb: 2
+                  }}>
+                    Net Balance: ₹{(stats.totalIncome - stats.totalExpenses).toLocaleString('en-IN')}
+                  </Typography>
+                  
+                  <Grid container spacing={4} justifyContent="center" sx={{ mb: 2 }}>
+                    <Grid item>
+                      <Typography variant="h6" sx={{ fontWeight: 700, color: '#4caf50' }}>
+                        ₹{stats.totalIncome.toLocaleString('en-IN')}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        💰 Total Income
+                      </Typography>
+                    </Grid>
+                    <Grid item>
+                      <Typography variant="h6" sx={{ fontWeight: 700, color: '#f44336' }}>
+                        ₹{stats.totalExpenses.toLocaleString('en-IN')}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        💸 Total Expenses
+                      </Typography>
+                    </Grid>
+                  </Grid>
+                  
+                  {stats.needsReviewCount > 0 && (
+                    <Alert severity="warning" sx={{ mt: 2, borderRadius: 2 }}>
+                      ⚠️ Balance excludes {stats.needsReviewCount} transaction{stats.needsReviewCount > 1 ? 's' : ''} with missing amounts
+                    </Alert>
+                  )}
+                </Box>
+              </>
+            )}
+          </Box>
+        </Paper>
+      </motion.div>
+
+      {/* Enhanced Upload History */}
+      {uploadResults.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+        >
+          <Paper sx={{ 
+            mt: 4,
+            borderRadius: 4, 
+            overflow: 'hidden',
+            backgroundColor: theme.palette.mode === 'dark' ? 'rgba(16, 16, 24, 0.85)' : '#fff',
+            border: '1px solid',
+            borderColor: theme.palette.mode === 'dark' ? 'rgba(233, 69, 96, 0.15)' : 'rgba(200, 200, 200, 0.3)',
+            boxShadow: theme.palette.mode === 'dark' 
+              ? '0 8px 32px rgba(0, 0, 0, 0.3)' 
+              : '0 8px 32px rgba(0, 0, 0, 0.08)',
+          }}>
+            <Box sx={{ 
+              p: 3, 
+              background: 'linear-gradient(135deg, #4caf50, #66bb6a)',
+              color: 'white'
+            }}>
+              <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                📂 Upload History ({uploadResults.length})
+              </Typography>
+            </Box>
+            
+            <Box sx={{ maxHeight: 400, overflow: 'auto' }}>
+              {uploadResults.map((result, index) => (
+                <motion.div
+                  key={result.id}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: index * 0.1, duration: 0.3 }}
+                >
+                  <Box sx={{ 
+                    p: 3, 
+                    borderBottom: '1px solid',
+                    borderColor: 'divider',
+                    '&:last-child': { borderBottom: 'none' }
+                  }}>
+                    <Grid container alignItems="center" spacing={2}>
+                      <Grid item xs={12} sm={8}>
+                        <Typography variant="subtitle1" sx={{ fontWeight: 600, color: theme.palette.text.primary }}>
+                          {result.filename}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                          {result.message}
+                        </Typography>
+                        <Typography variant="caption" color="text.secondary">
+                          {new Date(result.timestamp).toLocaleString()}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={12} sm={4}>
+                        <Box sx={{ display: 'flex', gap: 1, justifyContent: { xs: 'flex-start', sm: 'flex-end' }, flexWrap: 'wrap' }}>
+                          <Chip 
+                            label={result.type} 
+                            size="small" 
+                            color={result.type === 'receipt' ? 'primary' : 'secondary'}
+                            variant="outlined"
+                          />
+                          <Chip 
+                            icon={result.status === 'success' ? <SuccessIcon /> : <ErrorIcon />}
+                            label={result.status} 
+                            size="small" 
+                            color={result.status === 'success' ? 'success' : 'error'}
+                            variant="filled"
+                          />
+                          {result.fileUrl && (
+                            <a 
+                              href={result.fileUrl} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              style={{ textDecoration: 'none' }}
+                            >
+                              <Chip 
+                                icon={<ViewIcon />}
+                                label="View" 
+                                size="small" 
+                                clickable
+                                variant="outlined"
+                                color="primary"
+                              />
+                            </a>
+                          )}
+                        </Box>
+                      </Grid>
+                    </Grid>
+                  </Box>
+                </motion.div>
               ))}
             </Box>
           </Paper>
-        </SlideIn>
+        </motion.div>
       )}
 
-      {/* Notification Snackbar */}
+      {/* Enhanced Notification Snackbar */}
       <Snackbar
         open={notification.open}
         autoHideDuration={6000}
@@ -1713,25 +1702,17 @@ const Upload = () => {
           onClose={() => setNotification({ ...notification, open: false })} 
           severity={notification.severity}
           variant="filled"
-          sx={{ minWidth: 300 }}
+          sx={{ 
+            minWidth: 400,
+            borderRadius: 3,
+            fontSize: '0.95rem',
+            fontWeight: 600,
+            '& .MuiAlert-icon': { fontSize: 24 }
+          }}
         >
           {notification.message}
         </Alert>
       </Snackbar>
-
-      {/* CSS for animations */}
-      <style jsx>{`
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-        
-        @keyframes pulse {
-          0% { opacity: 1; }
-          50% { opacity: 0.8; }
-          100% { opacity: 1; }
-        }
-      `}</style>
     </Box>
   );
 };

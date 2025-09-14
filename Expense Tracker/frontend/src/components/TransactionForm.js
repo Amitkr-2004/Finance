@@ -23,10 +23,10 @@ import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { 
-  CurrencyRupee as MoneyIcon, 
-  Close as CloseIcon,
-  Save as SaveIcon,
-  Edit as EditIcon 
+  CurrencyRupee as CurrencyIcon, 
+  Close as TerminateIcon,
+  Save as CommitIcon,
+  Edit as ModifyIcon 
 } from '@mui/icons-material';
 import { motion, AnimatePresence } from 'framer-motion';
 import dayjs from 'dayjs';
@@ -34,13 +34,13 @@ import { createTransaction, updateTransaction } from '../features/transactions/t
 
 const categories = {
   income: [
-    'Salary', 'Freelance', 'Investment', 'Rental Income', 'Business Income',
-    'Gift Received', 'Bonus', 'Interest', 'Dividend', 'Other Income'
+    'Primary Income', 'Contract Work', 'Investment Returns', 'Property Revenue', 'Business Profit',
+    'Monetary Gift', 'Performance Bonus', 'Interest Yield', 'Dividend Payment', 'Misc Income'
   ],
   expense: [
-    'Food & Dining', 'Transportation', 'Shopping', 'Entertainment', 'Bills & Utilities',
-    'Healthcare', 'Education', 'Travel', 'Rent', 'Insurance', 'Groceries',
-    'Fuel', 'Internet', 'Mobile', 'Clothing', 'Personal Care', 'Other Expense'
+    'Nutrition & Dining', 'Mobility Services', 'Retail Purchases', 'Leisure Activities', 'Utility Payments',
+    'Medical Services', 'Learning & Development', 'Journey Expenses', 'Accommodation', 'Protection Plans', 'Supply Procurement',
+    'Energy Costs', 'Network Services', 'Communication', 'Wardrobe', 'Personal Maintenance', 'Other Expenses'
   ]
 };
 
@@ -86,30 +86,30 @@ const TransactionForm = ({ open, onClose, editData = null, viewMode = false }) =
     switch (name) {
       case 'amount':
         if (!value || parseFloat(value) <= 0) {
-          newErrors.amount = 'Amount must be greater than 0';
+          newErrors.amount = 'Value must exceed zero threshold';
         } else if (parseFloat(value) > 10000000) {
-          newErrors.amount = 'Amount cannot exceed ₹1 crore';
+          newErrors.amount = 'Value exceeds maximum system limit';
         } else {
           delete newErrors.amount;
         }
         break;
       case 'type':
         if (!value) {
-          newErrors.type = 'Please select transaction type';
+          newErrors.type = 'Transaction type selection required';
         } else {
           delete newErrors.type;
         }
         break;
       case 'category':
         if (!value) {
-          newErrors.category = 'Please select a category';
+          newErrors.category = 'Classification parameter required';
         } else {
           delete newErrors.category;
         }
         break;
       case 'description':
         if (value && value.length > 500) {
-          newErrors.description = 'Description cannot exceed 500 characters';
+          newErrors.description = 'Description exceeds character limit (500)';
         } else {
           delete newErrors.description;
         }
@@ -198,29 +198,69 @@ const TransactionForm = ({ open, onClose, editData = null, viewMode = false }) =
         maxWidth="md" 
         fullWidth
         PaperProps={{
-          sx: { borderRadius: 3 }
+          sx: { 
+            borderRadius: 4,
+            background: 'rgba(16, 16, 24, 0.95)',
+            backdropFilter: 'blur(40px)',
+            border: '1px solid rgba(233, 69, 96, 0.2)',
+          }
         }}
       >
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.9 }}
-          transition={{ duration: 0.2 }}
+          transition={{ duration: 0.3 }}
         >
-          <DialogTitle sx={{ pb: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <DialogTitle sx={{ 
+            pb: 2, 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'space-between',
+            borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+          }}>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              {editData ? <EditIcon sx={{ mr: 1, color: 'primary.main' }} /> : <MoneyIcon sx={{ mr: 1, color: 'primary.main' }} />}
-              <Typography variant="h6">
-                {viewMode ? 'Transaction Details' : editData ? 'Edit Transaction' : 'Add New Transaction'}
-              </Typography>
+              {editData ? <ModifyIcon sx={{ mr: 2, color: '#ffa502', fontSize: '1.5rem' }} /> : <CurrencyIcon sx={{ mr: 2, color: '#e94560', fontSize: '1.5rem' }} />}
+              <Box>
+                <Typography 
+                  variant="h5"
+                  sx={{
+                    fontWeight: 700,
+                    color: 'white',
+                    fontSize: '1.5rem',
+                    letterSpacing: '0.02em',
+                  }}
+                >
+                  {viewMode ? 'Transaction Inspection' : editData ? 'Data Modification' : 'New Entry Creation'}
+                </Typography>
+                <Typography 
+                  variant="body2"
+                  sx={{
+                    color: 'rgba(255, 255, 255, 0.6)',
+                    fontSize: '0.9rem',
+                    fontWeight: 500,
+                  }}
+                >
+                  {viewMode ? 'System data review' : editData ? 'Modify existing record' : 'Input financial data'}
+                </Typography>
+              </Box>
             </Box>
-            <IconButton onClick={handleClose} size="small">
-              <CloseIcon />
+            <IconButton 
+              onClick={handleClose} 
+              sx={{
+                color: 'rgba(255, 255, 255, 0.7)',
+                '&:hover': {
+                  color: '#ff4757',
+                  backgroundColor: 'rgba(255, 71, 87, 0.1)',
+                }
+              }}
+            >
+              <TerminateIcon />
             </IconButton>
           </DialogTitle>
           
           <form onSubmit={handleSubmit}>
-            <DialogContent>
+            <DialogContent sx={{ p: 4 }}>
               <AnimatePresence>
                 {error && (
                   <motion.div
@@ -228,18 +268,30 @@ const TransactionForm = ({ open, onClose, editData = null, viewMode = false }) =
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
                   >
-                    <Alert severity="error" sx={{ mb: 2 }}>
+                    <Alert 
+                      severity="error" 
+                      sx={{ 
+                        mb: 3,
+                        borderRadius: 3,
+                        backgroundColor: 'rgba(255, 71, 87, 0.15)',
+                        border: '1px solid rgba(255, 71, 87, 0.3)',
+                        color: '#ff6b88',
+                        '& .MuiAlert-icon': {
+                          color: '#ff6b88',
+                        }
+                      }}
+                    >
                       {error}
                     </Alert>
                   </motion.div>
                 )}
               </AnimatePresence>
 
-              <Grid container spacing={3}>
+              <Grid container spacing={4}>
                 <Grid item xs={12} sm={6}>
                   <TextField
                     fullWidth
-                    label="Amount"
+                    label="Monetary Value"
                     type="number"
                     value={formData.amount}
                     onChange={handleChange('amount')}
@@ -250,37 +302,90 @@ const TransactionForm = ({ open, onClose, editData = null, viewMode = false }) =
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
-                          <MoneyIcon />
+                          <CurrencyIcon sx={{ color: '#e94560' }} />
                         </InputAdornment>
                       ),
                       inputProps: { min: 0, step: 0.01, max: 10000000 }
                     }}
                     required
+                    sx={{
+                      '& .MuiOutlinedInput-root': {
+                        backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                        borderRadius: 3,
+                        '& fieldset': {
+                          borderColor: 'rgba(255, 255, 255, 0.2)',
+                        },
+                        '&:hover fieldset': {
+                          borderColor: 'rgba(233, 69, 96, 0.5)',
+                        },
+                        '&.Mui-focused fieldset': {
+                          borderColor: '#e94560',
+                        },
+                      },
+                      '& .MuiInputLabel-root': {
+                        color: 'rgba(255, 255, 255, 0.7)',
+                        fontSize: '1rem',
+                        fontWeight: 500,
+                      },
+                      '& .MuiOutlinedInput-input': {
+                        color: 'white',
+                        fontSize: '1rem',
+                        fontWeight: 600,
+                      },
+                      '& .MuiFormHelperText-root': {
+                        fontSize: '0.85rem',
+                        fontWeight: 500,
+                      },
+                    }}
                   />
                 </Grid>
 
                 <Grid item xs={12} sm={6}>
                   <FormControl fullWidth error={!!errors.type}>
-                    <InputLabel>Transaction Type *</InputLabel>
+                    <InputLabel sx={{ 
+                      color: 'rgba(255, 255, 255, 0.7)',
+                      fontSize: '1rem',
+                      fontWeight: 500,
+                    }}>
+                      Flow Direction *
+                    </InputLabel>
                     <Select
                       value={formData.type}
                       onChange={handleChange('type')}
                       onBlur={handleBlur('type')}
-                      label="Transaction Type *"
+                      label="Flow Direction *"
                       disabled={viewMode}
                       required
+                      sx={{
+                        backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                        borderRadius: 3,
+                        color: 'white',
+                        fontWeight: 600,
+                        '& .MuiOutlinedInput-notchedOutline': {
+                          borderColor: 'rgba(255, 255, 255, 0.2)',
+                        },
+                        '&:hover .MuiOutlinedInput-notchedOutline': {
+                          borderColor: 'rgba(233, 69, 96, 0.5)',
+                        },
+                        '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                          borderColor: '#e94560',
+                        },
+                        '& .MuiSelect-icon': {
+                          color: 'rgba(255, 255, 255, 0.7)',
+                        }
+                      }}
                     >
-                      <MenuItem value="income">
-                        <Chip label="Income" color="success" size="small" sx={{ mr: 1 }} />
-                        Income
+                      <MenuItem value="income" sx={{ fontSize: '1rem', fontWeight: 500 }}>
+                        <Chip label="IN" color="success" size="small" sx={{ mr: 2, fontWeight: 700 }} />
+                        Inflow Stream
                       </MenuItem>
-                      <MenuItem value="expense">
-                        <Chip label="Expense" color="error" size="small" sx={{ mr: 1 }} />
-                        Expense
+                      <MenuItem value="expense" sx={{ fontSize: '1rem', fontWeight: 500 }}>
+                        <Chip label="OUT" color="error" size="small" sx={{ mr: 2, fontWeight: 700 }} />
+                        Outflow Stream
                       </MenuItem>
                     </Select>
                     {errors.type && (
-                      <Typography variant="caption" color="error" sx={{ ml: 2, mt: 0.5 }}>
+                      <Typography variant="caption" color="error" sx={{ ml: 2, mt: 0.5, fontSize: '0.85rem', fontWeight: 500 }}>
                         {errors.type}
                       </Typography>
                     )}
@@ -289,23 +394,47 @@ const TransactionForm = ({ open, onClose, editData = null, viewMode = false }) =
 
                 <Grid item xs={12} sm={6}>
                   <FormControl fullWidth error={!!errors.category}>
-                    <InputLabel>Category *</InputLabel>
+                    <InputLabel sx={{ 
+                      color: 'rgba(255, 255, 255, 0.7)',
+                      fontSize: '1rem',
+                      fontWeight: 500,
+                    }}>
+                      Classification *
+                    </InputLabel>
                     <Select
                       value={formData.category}
                       onChange={handleChange('category')}
                       onBlur={handleBlur('category')}
-                      label="Category *"
+                      label="Classification *"
                       disabled={!formData.type || viewMode}
                       required
+                      sx={{
+                        backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                        borderRadius: 3,
+                        color: 'white',
+                        fontWeight: 600,
+                        '& .MuiOutlinedInput-notchedOutline': {
+                          borderColor: 'rgba(255, 255, 255, 0.2)',
+                        },
+                        '&:hover .MuiOutlinedInput-notchedOutline': {
+                          borderColor: 'rgba(233, 69, 96, 0.5)',
+                        },
+                        '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                          borderColor: '#e94560',
+                        },
+                        '& .MuiSelect-icon': {
+                          color: 'rgba(255, 255, 255, 0.7)',
+                        }
+                      }}
                     >
                       {formData.type && categories[formData.type].map((category) => (
-                        <MenuItem key={category} value={category}>
+                        <MenuItem key={category} value={category} sx={{ fontSize: '1rem', fontWeight: 500 }}>
                           {category}
                         </MenuItem>
                       ))}
                     </Select>
                     {errors.category && (
-                      <Typography variant="caption" color="error" sx={{ ml: 2, mt: 0.5 }}>
+                      <Typography variant="caption" color="error" sx={{ ml: 2, mt: 0.5, fontSize: '0.85rem', fontWeight: 500 }}>
                         {errors.category}
                       </Typography>
                     )}
@@ -314,11 +443,41 @@ const TransactionForm = ({ open, onClose, editData = null, viewMode = false }) =
 
                 <Grid item xs={12} sm={6}>
                   <DateTimePicker
-                    label="Date & Time"
+                    label="Temporal Marker"
                     value={formData.date}
                     onChange={(newValue) => setFormData(prev => ({ ...prev, date: newValue }))}
                     disabled={viewMode}
-                    renderInput={(params) => <TextField {...params} fullWidth />}
+                    renderInput={(params) => 
+                      <TextField 
+                        {...params} 
+                        fullWidth 
+                        sx={{
+                          '& .MuiOutlinedInput-root': {
+                            backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                            borderRadius: 3,
+                            '& fieldset': {
+                              borderColor: 'rgba(255, 255, 255, 0.2)',
+                            },
+                            '&:hover fieldset': {
+                              borderColor: 'rgba(233, 69, 96, 0.5)',
+                            },
+                            '&.Mui-focused fieldset': {
+                              borderColor: '#e94560',
+                            },
+                          },
+                          '& .MuiInputLabel-root': {
+                            color: 'rgba(255, 255, 255, 0.7)',
+                            fontSize: '1rem',
+                            fontWeight: 500,
+                          },
+                          '& .MuiOutlinedInput-input': {
+                            color: 'white',
+                            fontSize: '1rem',
+                            fontWeight: 600,
+                          },
+                        }}
+                      />
+                    }
                     maxDateTime={dayjs()}
                   />
                 </Grid>
@@ -326,7 +485,7 @@ const TransactionForm = ({ open, onClose, editData = null, viewMode = false }) =
                 <Grid item xs={12}>
                   <TextField
                     fullWidth
-                    label="Description (Optional)"
+                    label="Additional Notes (Optional)"
                     multiline
                     rows={3}
                     value={formData.description}
@@ -335,21 +494,59 @@ const TransactionForm = ({ open, onClose, editData = null, viewMode = false }) =
                     error={!!errors.description}
                     helperText={errors.description || `${formData.description.length}/500 characters`}
                     disabled={viewMode}
-                    placeholder="Add a note about this transaction..."
+                    placeholder="Enter contextual information about this transaction..."
                     inputProps={{ maxLength: 500 }}
+                    sx={{
+                      '& .MuiOutlinedInput-root': {
+                        backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                        borderRadius: 3,
+                        '& fieldset': {
+                          borderColor: 'rgba(255, 255, 255, 0.2)',
+                        },
+                        '&:hover fieldset': {
+                          borderColor: 'rgba(233, 69, 96, 0.5)',
+                        },
+                        '&.Mui-focused fieldset': {
+                          borderColor: '#e94560',
+                        },
+                      },
+                      '& .MuiInputLabel-root': {
+                        color: 'rgba(255, 255, 255, 0.7)',
+                        fontSize: '1rem',
+                        fontWeight: 500,
+                      },
+                      '& .MuiOutlinedInput-input': {
+                        color: 'white',
+                        fontSize: '1rem',
+                        fontWeight: 500,
+                      },
+                      '& .MuiFormHelperText-root': {
+                        fontSize: '0.85rem',
+                        fontWeight: 500,
+                      },
+                    }}
                   />
                 </Grid>
               </Grid>
             </DialogContent>
 
             {!viewMode && (
-              <DialogActions sx={{ p: 3 }}>
+              <DialogActions sx={{ p: 4, borderTop: '1px solid rgba(255, 255, 255, 0.1)' }}>
                 <Button 
                   onClick={handleClose} 
-                  color="inherit"
                   disabled={isLoading}
+                  sx={{
+                    color: 'rgba(255, 255, 255, 0.7)',
+                    fontSize: '1rem',
+                    fontWeight: 600,
+                    px: 3,
+                    py: 1,
+                    '&:hover': {
+                      backgroundColor: 'rgba(255, 255, 255, 0.08)',
+                    }
+                  }}
                 >
-                  Cancel
+                  Abort
                 </Button>
                 <motion.div
                   whileHover={{ scale: 1.05 }}
@@ -358,12 +555,30 @@ const TransactionForm = ({ open, onClose, editData = null, viewMode = false }) =
                   <Button 
                     type="submit" 
                     variant="contained" 
-                    color="primary"
                     size="large"
                     disabled={isLoading || Object.keys(errors).length > 0}
-                    startIcon={<SaveIcon />}
+                    startIcon={<CommitIcon />}
+                    sx={{
+                      px: 4,
+                      py: 1.5,
+                      borderRadius: 3,
+                      background: 'linear-gradient(135deg, #e94560, #ff6b88)',
+                      fontSize: '1rem',
+                      fontWeight: 700,
+                      letterSpacing: '0.025em',
+                      textTransform: 'uppercase',
+                      boxShadow: '0 8px 24px rgba(233, 69, 96, 0.35)',
+                      '&:hover': {
+                        background: 'linear-gradient(135deg, #ff6b88, #e94560)',
+                        boxShadow: '0 12px 32px rgba(233, 69, 96, 0.45)',
+                      },
+                      '&:disabled': {
+                        background: 'rgba(255, 255, 255, 0.1)',
+                        color: 'rgba(255, 255, 255, 0.4)',
+                      }
+                    }}
                   >
-                    {isLoading ? 'Saving...' : editData ? 'Update Transaction' : 'Add Transaction'}
+                    {isLoading ? 'Processing...' : editData ? 'Commit Changes' : 'Execute Entry'}
                   </Button>
                 </motion.div>
               </DialogActions>

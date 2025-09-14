@@ -16,22 +16,24 @@ function App() {
   return (
     <CustomThemeProvider>
       <Router>
-        <Routes>
-          <Route 
-            path="/login" 
-            element={!token ? <Login /> : <Navigate to="/dashboard" />} 
-          />
-          <Route 
-            path="/" 
-            element={token ? <Layout /> : <Navigate to="/login" />}
-          >
-            <Route index element={<Navigate to="/dashboard" />} />
-            <Route path="dashboard" element={<Dashboard />} />
-            <Route path="transactions" element={<Transactions />} />
-            <Route path="analytics" element={<AnalyticsPage />} />
-            <Route path="upload" element={<Upload />} />
-          </Route>
-        </Routes>
+        <div className="app-root">
+          <Routes>
+            <Route 
+              path="/login" 
+              element={!token ? <Login /> : <Navigate to="/dashboard" />} 
+            />
+            <Route 
+              path="/" 
+              element={token ? <Layout /> : <Navigate to="/login" />}
+            >
+              <Route index element={<Navigate to="/dashboard" />} />
+              <Route path="dashboard" element={<Dashboard />} />
+              <Route path="transactions" element={<Transactions />} />
+              <Route path="analytics" element={<AnalyticsPage />} />
+              <Route path="upload" element={<Upload />} />
+            </Route>
+          </Routes>
+        </div>
       </Router>
     </CustomThemeProvider>
   );

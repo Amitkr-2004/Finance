@@ -596,7 +596,7 @@ router.post('/receipt', (req, res, next) => {
   });
 });
 
-// Receipt processing function
+// Receipt processing function - ENHANCED TO ENSURE DASHBOARD UPDATES
 const handleReceiptUpload = async (req, res, next) => {
   const processingStartTime = Date.now();
   let uploadResult = null;
@@ -674,6 +674,7 @@ const handleReceiptUpload = async (req, res, next) => {
         message: 'Image uploaded but text extraction failed. Please add expense details manually.',
         expenses: [emptyTransaction],
         transactions: [emptyTransaction],
+        data: [emptyTransaction], // ADDED: Ensure compatibility with different frontend expectations
         fileUrl: uploadResult.url,
         stats: {
           totalExpenses: 1,
@@ -683,7 +684,10 @@ const handleReceiptUpload = async (req, res, next) => {
           processingTime: Date.now() - processingStartTime,
           textLength: extractedText?.length || 0
         },
-        ocrPreview: extractedText || 'OCR text extraction failed'
+        ocrPreview: extractedText || 'OCR text extraction failed',
+        // ADDED: Additional fields for dashboard compatibility
+        refreshRequired: true,
+        userId: userId
       });
     }
 
@@ -749,7 +753,7 @@ const handleReceiptUpload = async (req, res, next) => {
       }
     }
 
-    // Step 5: Generate comprehensive response
+    // Step 5: Generate comprehensive response with ENHANCED COMPATIBILITY
     const stats = {
       totalExpenses: savedTransactions.length,
       hasAmount: savedTransactions.filter(t => t.amount && t.amount > 0).length,
@@ -764,16 +768,28 @@ const handleReceiptUpload = async (req, res, next) => {
     console.log(`🎉 Receipt processing completed in ${stats.processingTime}ms`);
     console.log(`📊 Results: ${stats.totalExpenses} expenses, ${stats.hasAmount} with amounts, ${stats.needsManualAmount} need review`);
 
-    res.json({
+    // ENHANCED RESPONSE - Multiple formats for compatibility
+    const response = {
       success: true,
       message: `Successfully processed receipt and extracted ${savedTransactions.length} expense(s). ${stats.needsManualAmount > 0 ? `${stats.needsManualAmount} expense(s) need manual review.` : ''}`,
+      
+      // Multiple data formats for different frontend expectations
       expenses: savedTransactions,
       transactions: savedTransactions,
+      data: savedTransactions,
+      
       fileUrl: uploadResult.url,
       stats,
       ocrPreview: extractedText.substring(0, 1000) + (extractedText.length > 1000 ? '...' : ''),
-      rawOcrText: extractedText
-    });
+      rawOcrText: extractedText,
+      
+      // ADDED: Dashboard refresh indicators
+      refreshRequired: true,
+      userId: userId,
+      timestamp: new Date().toISOString()
+    };
+
+    res.json(response);
 
   } catch (error) {
     console.error('❌ Receipt processing error:', error);
@@ -813,7 +829,7 @@ router.post('/bank-statement', (req, res, next) => {
   });
 });
 
-// Bank statement processing function
+// Bank statement processing function - ENHANCED TO ENSURE DASHBOARD UPDATES
 const handleBankStatementUpload = async (req, res, next) => {
   const processingStartTime = Date.now();
   let uploadResult = null;
@@ -920,7 +936,7 @@ const handleBankStatementUpload = async (req, res, next) => {
       }
     }
 
-    // Step 5: Generate response
+    // Step 5: Generate enhanced response
     const stats = {
       totalTransactions: savedTransactions.length,
       hasAmount: savedTransactions.filter(t => t.amount && t.amount > 0).length,
@@ -932,16 +948,28 @@ const handleBankStatementUpload = async (req, res, next) => {
 
     console.log(`🎉 Bank statement processing completed in ${stats.processingTime}ms`);
 
-    res.json({
+    // ENHANCED RESPONSE - Multiple formats for compatibility
+    const response = {
       success: true,
       message: `Successfully imported ${savedTransactions.length} transaction(s) from bank statement.${stats.needsManualAmount > 0 ? ` ${stats.needsManualAmount} transaction(s) need manual review.` : ''}`,
+      
+      // Multiple data formats for different frontend expectations
       transactions: savedTransactions,
       expenses: savedTransactions, // Also provide for frontend compatibility
+      data: savedTransactions,
+      
       fileUrl: uploadResult.url,
       stats,
       ocrPreview: extractedText.substring(0, 1000) + (extractedText.length > 1000 ? '...' : ''),
-      rawOcrText: extractedText
-    });
+      rawOcrText: extractedText,
+      
+      // ADDED: Dashboard refresh indicators
+      refreshRequired: true,
+      userId: userId,
+      timestamp: new Date().toISOString()
+    };
+
+    res.json(response);
 
   } catch (error) {
     console.error('❌ Bank statement processing error:', error);
