@@ -449,7 +449,7 @@ const Dashboard = () => {
 
       <SlideIn direction="up" delay={0.4}>
         <Grid container spacing={4} sx={{ mb: 6 }}>
-          <Grid item xs={12} lg={6}>
+          <Grid item xs={12} lg={6} sx={{minWidth: "30rem"}}>
             <Paper
               elevation={0}
               sx={{
@@ -472,7 +472,7 @@ const Dashboard = () => {
             </Paper>
           </Grid>
 
-          <Grid item xs={12} lg={6}>
+          <Grid item xs={12} lg={6} sx={{minWidth: "30rem"}}>
             <Paper
               elevation={0}
               sx={{

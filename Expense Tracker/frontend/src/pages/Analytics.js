@@ -697,9 +697,9 @@ const AnalyticsPage = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
             >
-              <Grid container spacing={4}>
+              <Grid container spacing={7}>
                 {/* Daily Trend Line Chart */}
-                <Grid item xs={12} lg={8}>
+                <Grid item xs={12} lg={8} sx={{minWidth: "32rem"}}>
                   <Paper sx={{ 
                     p: 4, 
                     borderRadius: 4,
@@ -784,7 +784,7 @@ const AnalyticsPage = () => {
                 </Grid>
 
                 {/* Category Breakdown */}
-                <Grid item xs={12} lg={4}>
+                <Grid item xs={12} lg={4} sx={{minWidth: "32rem"}}>
                   <Paper sx={{ 
                     p: 4, 
                     borderRadius: 4, 
@@ -838,7 +838,7 @@ const AnalyticsPage = () => {
                 </Grid>
 
                 {/* Summary Bar Chart */}
-                <Grid item xs={12}>
+                <Grid item xs={12} sx={{minWidth: "30rem"}}>
                   <Paper sx={{ 
                     p: 4, 
                     borderRadius: 4, 
