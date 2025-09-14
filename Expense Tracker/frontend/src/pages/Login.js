@@ -92,22 +92,7 @@ const Login = () => {
         >
           <Box sx={{ textAlign: 'center', maxWidth: 400 }}>
             <ChartIcon sx={{ fontSize: 120, color: 'primary.main', mb: 4, filter: 'drop-shadow(0 8px 24px rgba(233, 69, 96, 0.3))' }} />
-            <Typography 
-              variant="h2" 
-              sx={{ 
-                fontWeight: 800, 
-                color: 'white', 
-                mb: 3,
-                background: 'linear-gradient(135deg, #e94560, #00d4aa)',
-                backgroundClip: 'text',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                fontSize: { xs: '2.5rem', md: '3.5rem' },
-                letterSpacing: '-0.04em',
-              }}
-            >
-              NEXUS
-            </Typography>
+            
             <Typography 
               variant="h5" 
               sx={{ 
