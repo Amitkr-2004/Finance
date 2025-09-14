@@ -12,6 +12,8 @@ import {
   Snackbar,
   Alert,
   Avatar,
+  Pagination,
+  Stack,
 } from '@mui/material';
 import {
   TrendingUp,
@@ -194,6 +196,10 @@ const Dashboard = () => {
 
   const [openForm, setOpenForm] = useState(false);
   const [notification, setNotification] = useState({ open: false, message: '', severity: 'success' });
+  
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6; // Show 6 transactions per page
 
   const { addOptimisticTransaction: addOptimistic, confirmOptimisticTransaction, revertOptimisticTransaction } =
     useOptimisticUpdates();
@@ -250,6 +256,16 @@ const Dashboard = () => {
   const trendData = Object.values(dailyData).sort(
     (a, b) => dayjs(a.date, 'MMM DD').valueOf() - dayjs(b.date, 'MMM DD').valueOf()
   );
+
+  // Pagination logic
+  const totalPages = Math.ceil(allTransactions.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedTransactions = allTransactions.slice(startIndex, endIndex);
+
+  const handlePageChange = (event, value) => {
+    setCurrentPage(value);
+  };
 
   const handlePieChartClick = (categoryName) => {
     dispatch(setChartFilter({ activeCategory: categoryName }));
@@ -553,7 +569,7 @@ const Dashboard = () => {
             </Box>
 
             <AnimatePresence mode="popLayout">
-              {allTransactions.slice(0, 8).map((transaction, index) => (
+              {paginatedTransactions.map((transaction, index) => (
                 <motion.div
                   key={transaction._id || transaction.tempId}
                   initial={{ opacity: 0, x: -30 }}
@@ -677,6 +693,101 @@ const Dashboard = () => {
                 </motion.div>
               ))}
             </AnimatePresence>
+
+            {/* Professional Pagination Component */}
+            {totalPages > 1 && (
+              <Box sx={{ 
+                display: 'flex', 
+                justifyContent: 'center', 
+                alignItems: 'center', 
+                mt: 4,
+                pt: 3,
+                borderTop: theme.palette.mode === 'dark' 
+                  ? '1px solid rgba(255, 255, 255, 0.08)' 
+                  : '1px solid rgba(0, 0, 0, 0.08)'
+              }}>
+                <Stack direction="row" spacing={2} alignItems="center">
+                  <Typography 
+                    variant="body2" 
+                    sx={{ 
+                      color: theme.palette.text.secondary,
+                      fontSize: '0.9rem',
+                      fontWeight: 500
+                    }}
+                  >
+                    Page {currentPage} of {totalPages}
+                  </Typography>
+                  
+                  <Pagination
+                    count={totalPages}
+                    page={currentPage}
+                    onChange={handlePageChange}
+                    color="primary"
+                    size="medium"
+                    showFirstButton
+                    showLastButton
+                    sx={{
+                      '& .MuiPaginationItem-root': {
+                        borderRadius: 2,
+                        border: theme.palette.mode === 'dark' 
+                          ? '1px solid rgba(255, 255, 255, 0.1)' 
+                          : '1px solid rgba(0, 0, 0, 0.12)',
+                        backgroundColor: theme.palette.mode === 'dark' 
+                          ? 'rgba(255, 255, 255, 0.02)' 
+                          : 'rgba(255, 255, 255, 0.8)',
+                        color: theme.palette.text.primary,
+                        fontWeight: 600,
+                        fontSize: '0.9rem',
+                        minWidth: '40px',
+                        height: '40px',
+                        margin: '0 2px',
+                        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                        '&:hover': {
+                          backgroundColor: theme.palette.mode === 'dark' 
+                            ? 'rgba(255, 255, 255, 0.05)' 
+                            : 'rgba(0, 0, 0, 0.04)',
+                          borderColor: theme.palette.mode === 'dark'
+                            ? 'rgba(233, 69, 96, 0.4)'
+                            : 'rgba(233, 69, 96, 0.3)',
+                          transform: 'translateY(-1px)',
+                          boxShadow: theme.palette.mode === 'dark'
+                            ? '0 4px 12px rgba(233, 69, 96, 0.15)'
+                            : '0 2px 8px rgba(233, 69, 96, 0.15)',
+                        },
+                        '&.Mui-selected': {
+                          background: 'linear-gradient(135deg, #e94560, #ff6b88)',
+                          color: 'white',
+                          border: '1px solid transparent',
+                          fontWeight: 700,
+                          '&:hover': {
+                            background: 'linear-gradient(135deg, #ff6b88, #e94560)',
+                            transform: 'translateY(-1px)',
+                            boxShadow: '0 6px 16px rgba(233, 69, 96, 0.3)',
+                          },
+                        },
+                        '&.MuiPaginationItem-ellipsis': {
+                          border: 'none',
+                          backgroundColor: 'transparent',
+                        }
+                      },
+                      '& .MuiPaginationItem-icon': {
+                        fontSize: '1.2rem',
+                      }
+                    }}
+                  />
+                  
+                  <Typography 
+                    variant="caption" 
+                    sx={{ 
+                      color: theme.palette.text.secondary,
+                      fontSize: '0.8rem'
+                    }}
+                  >
+                    {allTransactions.length} total items
+                  </Typography>
+                </Stack>
+              </Box>
+            )}
           </Paper>
         </AnimatedCard>
       </SlideIn>

@@ -107,19 +107,7 @@ const Sidebar = ({ mobileOpen, handleDrawerToggle, isMobile }) => {
           Smart Financial Management
         </Typography>
         
-        <Chip 
-          label="PRO"
-          size="small"
-          sx={{
-            mt: 1.5,
-            background: 'linear-gradient(135deg, #00d4aa, #33e4c4)',
-            color: 'white',
-            fontWeight: 700,
-            fontSize: '0.7rem',
-            letterSpacing: '0.1em',
-            boxShadow: '0 4px 12px rgba(0, 212, 170, 0.4)',
-          }}
-        />
+        
       </Box>
 
       {/* Enhanced Navigation */}
